@@ -4,6 +4,12 @@ Provides Data Entry pages for the quickAnalytics Solution.
 
 More details about the solution can be found at this [website](https://quickanalytics.netlify.app/).
 
+## Clone
+
+```sh
+git clone https://github.com/LaurenSCarter/quickAnalyticsPWA.git new-repo-name
+```
+
 ## Update URLS
 
 - This project interacts with a Google Apps Script endpoint to log data.
