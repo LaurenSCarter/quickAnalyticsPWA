@@ -1,0 +1,359 @@
+:root {
+
+    /* Main colors for the custom theme
+     * These colors are used throughout the theme for consistency.
+     */
+    --main-background-color: #025f60;
+    --main-background-color-lighter: #029d99;
+    --tertiary-background-color: #f0f0f0;
+    --tertiary-background-color-lighter: #ffffff;
+    --secondary-background-color: #e0e0e0;
+    --secondary-background-color-lighter: #f5f5f5;
+    --main-font-color: #4a5d7a;
+    --main-font-color-inverse: #e5dddb;
+    --main-heading-color: #025f60;
+    --main-link-hover: #025f60;
+    --main-link-hover-inverse: #abf6ea91;
+
+    /* Linear gradient for the background block (side bar and messages) */
+    --linear-gradient-background-block: linear-gradient(120deg,
+            var(--main-background-color-lighter),
+            var(--main-background-color));
+
+    /* Linear gradient for the shimmer effect on the header of the sidebar */
+    --linear-gradient-text-shimmer: linear-gradient(90deg, #e5dddb, #f9dcd4, #fce59bb7, #e5dddb);
+}
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--linear-gradient-background-block);
+    min-height: 100vh;
+    color: #333;
+}
+
+.app-container {
+    max-width: 500px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+header {
+    background: var(--linear-gradient-background-block);
+    color: var(--main-font-color-inverse);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-logo {
+    height: 2rem;
+    width: auto;
+    filter: brightness(0) saturate(100%) invert(91%) sepia(4%) saturate(346%) hue-rotate(315deg) brightness(98%) contrast(94%);
+}
+
+header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: var(--linear-gradient-text-shimmer);
+    background-clip: text;
+    background-size: 200% 200%;
+    color: transparent;
+    animation: shimmer 21s infinite;
+    margin: 0;
+}
+
+.page-nav {
+    background: var(--secondary-background-color);
+    border-bottom: 1px solid var(--secondary-background-color-lighter);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.page-nav a {
+    color: var(--main-font-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background: var(--tertiary-background-color-lighter);
+    border: 2px solid var(--secondary-background-color);
+    transition: all 0.3s ease;
+}
+
+.page-nav a:hover {
+    color: var(--main-link-hover);
+    border-color: var(--main-background-color-lighter);
+    background: var(--secondary-background-color-lighter);
+    transform: translateY(-1px);
+}
+
+.dashboard-link {
+    margin-left: auto;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.status {
+    font-size: 1.2rem;
+}
+
+.status.online {
+    color: #4CAF50;
+}
+
+.status.offline {
+    color: #ff9800;
+}
+
+/* Main content */
+main {
+    padding: 1.5rem;
+}
+
+/* Form styles */
+.entry-form {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #555;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--main-background-color-lighter);
+}
+
+/* Energy slider */
+.energy-slider {
+    appearance: none;
+    height: 8px;
+    background: linear-gradient(to right, #ff5722 0%, #ffc107 50%, #4caf50 100%);
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+.energy-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border: 3px solid var(--main-background-color-lighter);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.energy-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: white;
+    border: 3px solid var(--main-background-color-lighter);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.energy-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+#energy-value {
+    font-weight: bold;
+    color: var(--main-background-color-lighter);
+}
+
+/* Submit button */
+.submit-btn {
+    width: 100%;
+    background: var(--linear-gradient-background-block);
+    color: var(--main-font-color-inverse);
+    border: none;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+}
+
+.submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Messages */
+.message {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.message.success {
+    background: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #4caf50;
+}
+
+.message.error {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #f44336;
+}
+
+.message.info {
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #2196f3;
+}
+
+/* Quick actions */
+.quick-actions {
+    margin-top: 2rem;
+}
+
+.quick-actions h3 {
+    margin-bottom: 1rem;
+    color: #555;
+}
+
+.quick-btn {
+    background: #f5f5f5;
+    border: 2px solid #e0e0e0;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.quick-btn:hover {
+    background: var(--linear-gradient-background-block);
+    color: var(--main-font-color-inverse);
+    border-color: var(--main-background-color-lighter);
+}
+
+/* Pending entries */
+.pending-entries {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+.pending-entries h3 {
+    color: #856404;
+    margin-bottom: 1rem;
+}
+
+.sync-btn {
+    background: #ffc107;
+    color: #856404;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .app-container {
+        box-shadow: none;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-nav {
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* PWA specific styles */
+@media (display-mode: standalone) {
+    body {
+        user-select: none;
+    }
+
+    header {
+        padding-top: env(safe-area-inset-top, 1rem);
+    }
+}
