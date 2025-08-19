@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="97"
+   height="78"
+   viewBox="0 0 97 78"
+   sodipodi:docname="pie-chart-zinc.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="10.064103"
+     inkscape:cx="47.197452"
+     inkscape:cy="39.099363"
+     inkscape:window-width="1854"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g8" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g8">
+    <path
+       style="fill:#e3dedb;fill-opacity:1"
+       d="M 29.626037,73.419324 C 19.617209,70.673899 10.853641,65.452006 7.2717669,60.099222 L 4.9960988,56.698445 5.0940341,42.113949 C 5.2206439,23.259234 7.426061,19.244539 20.946392,13.25665 48.434177,1.0828499 95,11.586224 95,29.960162 95,30.648555 87.536257,31 72.916667,31 55.69479,31 50.924916,31.275177 51.249353,32.25 c 0.312025,0.937532 5.841608,1.317395 22.120599,1.519606 L 95.074533,34.039212 94.787266,43.269606 94.5,52.5 77,53.420408 C 33.842227,55.690281 18.656179,52.891511 8.6601381,40.825453 5.4329422,36.929957 5.0920727,38.848888 8.25,43.134333 15.650152,53.17666 41.767537,60.246388 60,57.142565 c 3.575,-0.608594 7.4,-1.227142 8.5,-1.37455 L 70.5,55.5 v 8.934654 8.934654 l -5,1.296056 c -8.386983,2.174001 -25.583239,1.576709 -35.873963,-1.24604 z M 59.882756,48.358729 c -0.749174,-0.902699 -5.820323,-6.077699 -11.26922,-11.5 L 38.706449,27 H 63.353225 C 90.729905,27 91.859861,26.681425 83.75,21.249421 72.592998,13.776434 57.227019,10.851989 40.075814,12.937373 -5.1981306,18.442151 2.6303502,49.58013 49.372445,49.914955 L 61.244889,50 Z"
+       id="path1230" />
+  </g>
+</svg>

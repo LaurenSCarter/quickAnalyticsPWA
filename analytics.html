@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Note to Developer:  LOOKER STUDIO is throwing errors when attempting to embed a dashboard to the iframe.
+     I have not been able to suppress these violations and errors, but they do not appear to be an issue
+     The dashboard still loads and is functional. -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2196F3">
+    <meta http-equiv="Permissions-Policy" content="unload=(self https://lookerstudio.google.com https://*.google.com)">
+    <title>Weekly Dashboard</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- iOS PWA Support -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Quick Analytics">
+
+    <link rel="icon" href="/icons/favicon.ico" />
+
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .analytics-iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            margin: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: var(--tertiary-background-color-lighter);
+
+            /* Responsive height based on viewport */
+            height: 85vh;  /* Desktop default - 85% of viewport height */
+            min-height: 400px;  /* Minimum height to ensure usability */
+        }
+
+        /* Tablet adjustments (768px and below) */
+        @media (max-width: 768px) {
+            .analytics-iframe {
+                margin: 0.5rem;
+                height: 82vh;
+                min-height: 350px;
+            }
+        }
+
+        /* Large phone/small tablet (600px and below) */
+        @media (max-width: 600px) {
+            .analytics-iframe {
+                height: 80vh;
+                min-height: 300px;
+            }
+
+            .app-container {
+                box-shadow: none;
+            }
+        }
+
+        /* Small phone adjustments (480px and below) */
+        @media (max-width: 480px) {
+            .analytics-iframe {
+                margin: 0.25rem;
+                height: 75vh;
+                min-height: 280px;
+            }
+
+            .back-nav {
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        /* Very small screens (360px and below) */
+        @media (max-width: 360px) {
+            .analytics-iframe {
+                height: 75vh;
+                min-height: 250px;
+                margin: 0.125rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-left">
+                <img src="icons/logo-zinc.svg" alt="Quick Analytics Logo" class="header-logo">
+                <h1>Weekly Dashboard</h1>
+            </div>
+            <div class="status-indicator">
+                <span id="online-status" class="status online">●</span>
+                <span id="status-text">Online</span>
+            </div>
+        </header>
+
+        <div class="page-nav">
+            <a href="index.html">← Back to Time Entry</a>
+        </div>
+
+        <main>
+            <iframe id="analytics-iframe" class="analytics-iframe"
+                sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                 allow="unload 'self' https://lookerstudio.google.com"
+                title="Weekly Dashboard">
+            </iframe>
+        </main>
+    </div>
+
+    <script src="constants.js"></script>
+    <script>
+        // Update online status
+        function updateOnlineStatus() {
+            const statusIndicator = document.getElementById('online-status');
+            const statusText = document.getElementById('status-text');
+
+            if (navigator.onLine) {
+                statusIndicator.className = 'status online';
+                statusText.textContent = 'Online';
+            } else {
+                statusIndicator.className = 'status offline';
+                statusText.textContent = 'Offline';
+            }
+        }
+
+        // Set iframe src using constants
+        document.getElementById('analytics-iframe').src = URLS.WEEKLY_DASHBOARD;
+
+        // Initialize online status
+        updateOnlineStatus();
+
+        // Listen for online/offline events
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(error => console.log('SW registration failed'));
+            });
+        }
+    </script>
+</body>
+
+</html>
