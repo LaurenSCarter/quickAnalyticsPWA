@@ -1,6 +1,6 @@
 class QuickAnalytics {
     constructor() {
-        this.apiUrl = 'https://script.google.com/macros/s/AKfycbwXGJWZW7Hx_nAKAWx9_PNm_uIve1K4YKUWkHUkRY6wzANr1_84ZscC1KuoCVBv5Ckp3g/exec'; // Replace with latest deployment APP SCRIPT URL
+        this.apiUrl = URLS.API_SCRIPT; // Replace with latest deployment APP SCRIPT URL
         this.init();
     }
 

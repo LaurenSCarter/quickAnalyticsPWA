@@ -101,8 +101,7 @@
         </div>
 
         <main>
-            <iframe class="analytics-iframe"
-                src="https://lookerstudio.google.com/embed/reporting/6b9695d3-cc1f-4539-9b0f-b6918d6a360a/page/mKhMF"
+            <iframe id="analytics-iframe" class="analytics-iframe"
                 sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                  allow="unload 'self' https://lookerstudio.google.com"
                 title="Weekly Dashboard">
@@ -110,6 +109,7 @@
         </main>
     </div>
 
+    <script src="constants.js"></script>
     <script>
         // Update online status
         function updateOnlineStatus() {
@@ -124,6 +124,9 @@
                 statusText.textContent = 'Offline';
             }
         }
+
+        // Set iframe src using constants
+        document.getElementById('analytics-iframe').src = URLS.WEEKLY_DASHBOARD;
 
         // Initialize online status
         updateOnlineStatus();
