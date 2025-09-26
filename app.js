@@ -535,6 +535,11 @@ class QuickAnalytics {
     }
 }
 
+// Export for testing
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = QuickAnalytics;
+}
+
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
     new QuickAnalytics();
