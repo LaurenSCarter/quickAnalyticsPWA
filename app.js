@@ -22,13 +22,13 @@ class QuickAnalytics {
         const syncButton = document.getElementById('sync-now');
         const categorySelect = document.getElementById('category');
         const taskSelect = document.getElementById('task');
-        const clientSelect = document.getElementById('client');
+        const subSubCategorySelect = document.getElementById('subSubCategory');
 
         form.addEventListener('submit', (e) => this.handleSubmit(e));
         energySlider.addEventListener('input', (e) => this.updateEnergyValue(e));
         categorySelect.addEventListener('change', (e) => this.handleCategoryChange(e));
         taskSelect.addEventListener('change', (e) => this.handleTaskChange(e));
-        clientSelect.addEventListener('change', (e) => this.handleClientChange(e));
+        subSubCategorySelect.addEventListener('change', (e) => this.handleSubSubCategoryChange(e));
 
         quickButtons.forEach(btn => {
             btn.addEventListener('click', (e) => this.handleQuickAction(e));
@@ -41,8 +41,9 @@ class QuickAnalytics {
 
     setDefaultDate() {
         const dateInput = document.getElementById('date');
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.value = today;
+        const today = new Date();
+        const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
+        dateInput.value = localDate.toISOString().split('T')[0];
     }
 
     updateEnergyValue(e) {
@@ -54,76 +55,30 @@ class QuickAnalytics {
         const category = e.target.value;
         const taskSelect = document.getElementById('task');
 
-        // Define tasks for each category
-        const taskOptions = {
-            'Ascension Pathway': [
-                'Admin',
-                'Circle',
-                'Check-in',
-                'Class',
-                'Data Management',
-                'Homework',
-                'Prayer Partner',
-                'Other'
-            ],
-            'Health': [
-                'Body Care',
-                'Dentist',
-                'Emotional Care',
-                'Hobbies',
-                'Mindful Eating',
-                'Relax',
-                'Yoga',
-                'Other'
-            ],
-            'Home Management': [
-                'Car',
-                'Cleaning',
-                'Cooking',
-                'Decluttering',
-                'Decorating Project',
-                'Finances',
-                'General Maintenance',
-                'Misc',
-                'Pet Care',
-                'Shopping',
-                'Strata',
-                'Other'
-            ],
-            'Work': [
-                'Computer Maintenance',
-                'Domestic Angel',
-                'Job Applications',
-                'Overhead',
-                'Professional Development',
-                'Sole Trader Administration',
-                'Trello Sprint',
-                'Quick Analytics',
-                'Other'
-            ]
-        };
+        // Get tasks for each category from data.js
+        const taskOptions = CategoryData.taskOptions;
 
         // Clear existing options
         taskSelect.innerHTML = '<option value="">Select Sub Category</option>';
         
-        // Also clear client dropdown when category changes
-        const clientSelect = document.getElementById('client');
-        clientSelect.innerHTML = '<option value="">Select Sub Category First</option>';
+        // Also clear sub-sub-category dropdown when category changes
+        const subSubCategorySelect = document.getElementById('subSubCategory');
+        subSubCategorySelect.innerHTML = '<option value="">Select Sub Category First</option>';
         
-        // Hide custom task input when category changes
+        // Hide custom task and sub-sub-category inputs when category changes
         const customTaskGroup = document.getElementById('custom-task-group');
         const customTaskInput = document.getElementById('custom-task');
-        const customClientGroup = document.getElementById('custom-client-group');
-        const customClientInput = document.getElementById('custom-client');
+        const customSubSubCategoryGroup = document.getElementById('custom-subSubCategory-group');
+        const customSubSubCategoryInput = document.getElementById('custom-subSubCategory');
         
         customTaskGroup.style.display = 'none';
         customTaskInput.required = false;
         customTaskInput.value = '';
-        customClientGroup.style.display = 'none';
-        customClientInput.required = false;
-        customClientInput.value = '';
-        clientSelect.disabled = false;
-        clientSelect.style.display = 'block';
+        customSubSubCategoryGroup.style.display = 'none';
+        customSubSubCategoryInput.required = false;
+        customSubSubCategoryInput.value = '';
+        subSubCategorySelect.disabled = false;
+        subSubCategorySelect.style.display = 'block';
 
         // Add tasks for selected category
         if (category && taskOptions[category]) {
@@ -140,112 +95,73 @@ class QuickAnalytics {
 
     handleTaskChange(e) {
         const task = e.target.value;
-        const clientSelect = document.getElementById('client');
+        const subSubCategorySelect = document.getElementById('subSubCategory');
         const customTaskGroup = document.getElementById('custom-task-group');
         const customTaskInput = document.getElementById('custom-task');
         
         // Show/hide custom task input based on selection
-        const customClientGroup = document.getElementById('custom-client-group');
-        const customClientInput = document.getElementById('custom-client');
+        const customSubSubCategoryGroup = document.getElementById('custom-subSubCategory-group');
+        const customSubSubCategoryInput = document.getElementById('custom-subSubCategory');
         
         if (task === 'Other') {
             customTaskGroup.style.display = 'block';
             customTaskInput.required = true;
-            // Hide client dropdown and show custom client input for Other tasks
-            clientSelect.style.display = 'none';
-            customClientGroup.style.display = 'block';
-            customClientInput.required = false; // Optional field
+            // Hide sub-sub-category dropdown and show custom sub-sub-category input for Other tasks
+            subSubCategorySelect.style.display = 'none';
+            customSubSubCategoryGroup.style.display = 'block';
+            customSubSubCategoryInput.required = false; // Optional field
             return;
         } else {
             customTaskGroup.style.display = 'none';
             customTaskInput.required = false;
             customTaskInput.value = '';
-            clientSelect.style.display = 'block';
-            clientSelect.disabled = false;
-            customClientGroup.style.display = 'none';
-            customClientInput.required = false;
-            customClientInput.value = '';
+            subSubCategorySelect.style.display = 'block';
+            subSubCategorySelect.disabled = false;
+            customSubSubCategoryGroup.style.display = 'none';
+            customSubSubCategoryInput.required = false;
+            customSubSubCategoryInput.value = '';
         }
         
-        // Define client options for each task
-        const clientOptions = {
-            // Ascension Pathway tasks
-            'Admin': ['ML3 Class Index', 'Survey'],
-            'Circle': ['Video On', 'Video Off'],
-            'Check-in': ['1-1 check-in with Jennifer', '1-1 check-in with Mary-Lu'],
-            'Class': ['Replay','Video Off', 'Video On'],
-            'Data Management': ['Download Files', 'ML1 - Download - Rename - Organise', 'ML2 - Download - Rename - Organise', 'ML3 - Download - Rename - Organise', 'AP - Download - Rename - Organise'],
-            'Homework': ['Reading','Ray 3','Inspiration Board','Meditation'],
-            'Prayer Partner': ['Andree','Sara','Cora','Julie'],
-            
-            // Health tasks
-            'Body Care': ['Personal Hygiene','Mindful Eating','Gym','Rest','Sauna','Sick'],
-            'Dentist': ['Check Appointment','Attend Appointment'],
-            'Emotional Care': ['Journaling','Contemplation'],
-            'Hobbies': ['Knitting','Reading','Audiobook','Podcast'],
-            'Relax': ['Bath','Break','Reading','Rest','Sunshine','TV / YouTube'],
-            'Yoga': ['Study','Practice','Weights','Meditation','Tattoo'],
-            
-            // Home Management tasks
-            'Car': ['Service', 'Registration'],
-            'Cleaning': ['General','Kitchen','Bedroom','Bathroom','Lounge Room','Laundry','Home Office','Car','Rubbish','Deep Clean','Service Vacuum'],
-            'Cooking': ['Food Prep','Breakfast','Brunch','Lunch','Dinner'],
-            'Decluttering': ['Bedroom','Home Office',],
-            'Decorating Project': ['Bedroom','Home Office','Kitchen',],
-            'Finances': ['Manage Subscriptions','Home Accounts','Suspend Health Insurance','Bills'],
-            'Misc': ['Move Car','Condition leather jacket','Connect Smart PowerPoints to Network'],
-            'Pet Care': ['Dog Walk','Take Pets Out','Feed Pets','Commute','Brush Bease','Bonding','Cat demands','Food Prep','Vet','Doggy Drive'],
-            'Shopping': ['Groceries','Clothes','Accessories','Misc','Post','Errands',],
-            'Strata': ['Communication','Yard Work'],
-            
-            // Work tasks
-            'Computer Maintenance': ['System Updates','Security','Dev Setup','Cloud Storage','Content Liberation','Google Photo Settings','Share Recordings to PC','Clean Android Internal Drive','Laptop Battery','Review Key Commands','Troubleshoot Network Congestion','Resolve DNS Issues',],
-            'Domestic Angel': ['Product Development','Website V2'],
-            'Job Applications': [],
-            'Overhead': ['Commute','Daily Setup'],
-            'Professional Development': ['Research Vibe Coding Tools','AI Research','Training: PySpark'],
-            'Sole Trader Administration': ['Marketing','Death & Taxes','ABN - Sole Trader Registration','Domain/Email Registration'],
-            'Trello Sprint': ['Weekly Review','Update Cards','Stand Up'],
-            'Quick Analytics': ['Data Management','Development V2','End of Month Review','Time Entries',]
-        };
+        // Get sub-sub-category options for each task from data.js
+        const subSubCategoryOptions = CategoryData.subSubCategoryOptions;
 
-        // Clear existing options and hide custom client input
-        clientSelect.innerHTML = '<option value="">Select Client/Context</option>';
-        customClientGroup.style.display = 'none';
-        customClientInput.required = false;
-        customClientInput.value = '';
+        // Clear existing options and hide custom sub-sub-category input
+        subSubCategorySelect.innerHTML = '<option value="">Select Sub-Sub Category</option>';
+        customSubSubCategoryGroup.style.display = 'none';
+        customSubSubCategoryInput.required = false;
+        customSubSubCategoryInput.value = '';
         
-        // Add client options for selected task
-        if (task && clientOptions[task]) {
-            clientOptions[task].forEach(client => {
+        // Add sub-sub-category options for selected task
+        if (task && subSubCategoryOptions[task]) {
+            subSubCategoryOptions[task].forEach(subSubCategory => {
                 const option = document.createElement('option');
-                option.value = client;
-                option.textContent = client;
-                clientSelect.appendChild(option);
+                option.value = subSubCategory;
+                option.textContent = subSubCategory;
+                subSubCategorySelect.appendChild(option);
             });
             
             // Always add "Other" option at the end
             const otherOption = document.createElement('option');
             otherOption.value = 'Other';
             otherOption.textContent = 'Other';
-            clientSelect.appendChild(otherOption);
+            subSubCategorySelect.appendChild(otherOption);
         } else {
-            clientSelect.innerHTML = '<option value="">Select Sub Category First</option>';
+            subSubCategorySelect.innerHTML = '<option value="">Select Sub Category First</option>';
         }
     }
 
-    handleClientChange(e) {
-        const client = e.target.value;
-        const customClientGroup = document.getElementById('custom-client-group');
-        const customClientInput = document.getElementById('custom-client');
+    handleSubSubCategoryChange(e) {
+        const subSubCategory = e.target.value;
+        const customSubSubCategoryGroup = document.getElementById('custom-subSubCategory-group');
+        const customSubSubCategoryInput = document.getElementById('custom-subSubCategory');
         
-        if (client === 'Other') {
-            customClientGroup.style.display = 'block';
-            customClientInput.required = false; // Optional field
+        if (subSubCategory === 'Other') {
+            customSubSubCategoryGroup.style.display = 'block';
+            customSubSubCategoryInput.required = false; // Optional field
         } else {
-            customClientGroup.style.display = 'none';
-            customClientInput.required = false;
-            customClientInput.value = '';
+            customSubSubCategoryGroup.style.display = 'none';
+            customSubSubCategoryInput.required = false;
+            customSubSubCategoryInput.value = '';
         }
     }
 
@@ -253,17 +169,37 @@ class QuickAnalytics {
         const button = e.target;
         const category = button.dataset.category;
         const task = button.dataset.task;
+        const subSubCategory = button.dataset.subcategory;
+        const duration = parseInt(button.dataset.duration);
 
-        document.getElementById('category').value = category;
-        document.getElementById('task').value = task;
+        // Set category and trigger change to populate task dropdown
+        const categorySelect = document.getElementById('category');
+        categorySelect.value = category;
+        this.handleCategoryChange({ target: categorySelect });
+
+        // Set task and trigger change to populate sub-sub-category dropdown
+        const taskSelect = document.getElementById('task');
+        taskSelect.value = task;
+        this.handleTaskChange({ target: taskSelect });
+
+        // Set sub-sub-category
+        const subSubCategorySelect = document.getElementById('subSubCategory');
+        subSubCategorySelect.value = subSubCategory;
 
         // Set start time to now
         const now = new Date();
-        const timeString = now.toTimeString().slice(0, 5);
-        document.getElementById('start-time').value = timeString;
+        const startTimeString = now.toTimeString().slice(0, 5);
+        document.getElementById('start-time').value = startTimeString;
 
-        // Focus on end time for quick entry
-        document.getElementById('end-time').focus();
+        // Calculate and set end time based on duration
+        if (duration) {
+            const endTime = new Date(now.getTime() + (duration * 60000)); // Add duration in minutes
+            const endTimeString = endTime.toTimeString().slice(0, 5);
+            document.getElementById('end-time').value = endTimeString;
+        }
+
+        // Focus on submit button since everything is filled in
+        document.querySelector('.submit-btn').focus();
     }
 
     async handleSubmit(e) {
@@ -306,16 +242,20 @@ class QuickAnalytics {
             data[key] = value;
         }
 
+        // Store original task value to check for 'Other'
+        const originalTask = data.task;
+
         // Handle custom task input
         if (data.task === 'Other' && data.customTask) {
             data.task = data.customTask;
             delete data.customTask;
         }
 
-        // Handle custom client input
-        if (data.client === 'Other' && data.customClient) {
-            data.client = data.customClient;
-            delete data.customClient;
+        // Handle custom sub-sub-category input
+        // This can happen either when subSubCategory is 'Other' OR when original task is 'Other' (which shows custom sub-sub-category input)
+        if (data.customSubSubCategory && (data.subSubCategory === 'Other' || originalTask === 'Other')) {
+            data.subSubCategory = data.customSubSubCategory;
+            delete data.customSubSubCategory;
         }
 
         // Convert date and times to ISO format
@@ -324,9 +264,6 @@ class QuickAnalytics {
         // Create ISO timestamps from date + time
         data.startTime = `${date}T${data.startTime}:00Z`;
         data.endTime = `${date}T${data.endTime}:00Z`;
-
-        // Remove the separate date field since it's now included in timestamps
-        delete data.date;
 
         // Convert energy to number
         data.energy = parseInt(data.energy);
@@ -363,8 +300,12 @@ class QuickAnalytics {
         const encodedData = {
             ...data,
             startTime: encodeURIComponent(data.startTime),
-            endTime: encodeURIComponent(data.endTime)
+            endTime: encodeURIComponent(data.endTime),
+            client: data.subSubCategory  // Backend expects 'client' field name
         };
+        
+        // Remove the frontend field name
+        delete encodedData.subSubCategory;
 
         console.log('sending body: ', JSON.stringify(encodedData));
 
@@ -535,6 +476,11 @@ class QuickAnalytics {
         this.setDefaultDate();
         document.getElementById('energy-value').textContent = '0';
     }
+}
+
+// Export for testing
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = QuickAnalytics;
 }
 
 // Initialize the app
