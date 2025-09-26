@@ -326,9 +326,6 @@ class QuickAnalytics {
         data.startTime = `${date}T${data.startTime}:00Z`;
         data.endTime = `${date}T${data.endTime}:00Z`;
 
-        // Remove the separate date field since it's now included in timestamps
-        delete data.date;
-
         // Convert energy to number
         data.energy = parseInt(data.energy);
 
