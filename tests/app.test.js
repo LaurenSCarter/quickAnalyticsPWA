@@ -105,6 +105,25 @@ describe('QuickAnalytics', () => {
             expect(result.task).toBe('Custom Task Name');
             expect(result.customTask).toBeUndefined();
         });
+
+        test('should handle custom task with custom sub-sub-category', () => {
+            const formData = new FormData();
+            formData.set('date', '2023-12-01');
+            formData.set('category', 'Work');
+            formData.set('task', 'Other');
+            formData.set('customTask', 'Custom Task Name');
+            formData.set('customSubSubCategory', 'Custom Sub-Sub Category');
+            formData.set('startTime', '09:00');
+            formData.set('endTime', '10:00');
+            formData.set('energy', '0');
+
+            const result = app.prepareData(formData);
+
+            expect(result.task).toBe('Custom Task Name');
+            expect(result.customTask).toBeUndefined();
+            expect(result.subSubCategory).toBe('Custom Sub-Sub Category');
+            expect(result.customSubSubCategory).toBeUndefined();
+        });
     });
 
     describe('validateData', () => {

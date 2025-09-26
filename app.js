@@ -306,6 +306,9 @@ class QuickAnalytics {
             data[key] = value;
         }
 
+        // Store original task value to check for 'Other'
+        const originalTask = data.task;
+
         // Handle custom task input
         if (data.task === 'Other' && data.customTask) {
             data.task = data.customTask;
@@ -313,7 +316,8 @@ class QuickAnalytics {
         }
 
         // Handle custom sub-sub-category input
-        if (data.subSubCategory === 'Other' && data.customSubSubCategory) {
+        // This can happen either when subSubCategory is 'Other' OR when original task is 'Other' (which shows custom sub-sub-category input)
+        if (data.customSubSubCategory && (data.subSubCategory === 'Other' || originalTask === 'Other')) {
             data.subSubCategory = data.customSubSubCategory;
             delete data.customSubSubCategory;
         }
@@ -360,8 +364,12 @@ class QuickAnalytics {
         const encodedData = {
             ...data,
             startTime: encodeURIComponent(data.startTime),
-            endTime: encodeURIComponent(data.endTime)
+            endTime: encodeURIComponent(data.endTime),
+            client: data.subSubCategory  // Backend expects 'client' field name
         };
+        
+        // Remove the frontend field name
+        delete encodedData.subSubCategory;
 
         console.log('sending body: ', JSON.stringify(encodedData));
 
