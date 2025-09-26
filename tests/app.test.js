@@ -19,14 +19,14 @@ beforeAll(() => {
             <select id="task" name="task" required>
                 <option value="">Select Category First</option>
             </select>
-            <select id="client" name="client">
+            <select id="subSubCategory" name="subSubCategory">
                 <option value="">Select Sub Category First</option>
             </select>
             <div id="custom-task-group" style="display: none;">
                 <input type="text" id="custom-task" name="customTask">
             </div>
-            <div id="custom-client-group" style="display: none;">
-                <input type="text" id="custom-client" name="customClient">
+            <div id="custom-subSubCategory-group" style="display: none;">
+                <input type="text" id="custom-subSubCategory" name="customSubSubCategory">
             </div>
             <input type="time" id="start-time" name="startTime" required>
             <input type="time" id="end-time" name="endTime" required>

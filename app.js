@@ -22,13 +22,13 @@ class QuickAnalytics {
         const syncButton = document.getElementById('sync-now');
         const categorySelect = document.getElementById('category');
         const taskSelect = document.getElementById('task');
-        const clientSelect = document.getElementById('client');
+        const subSubCategorySelect = document.getElementById('subSubCategory');
 
         form.addEventListener('submit', (e) => this.handleSubmit(e));
         energySlider.addEventListener('input', (e) => this.updateEnergyValue(e));
         categorySelect.addEventListener('change', (e) => this.handleCategoryChange(e));
         taskSelect.addEventListener('change', (e) => this.handleTaskChange(e));
-        clientSelect.addEventListener('change', (e) => this.handleClientChange(e));
+        subSubCategorySelect.addEventListener('change', (e) => this.handleSubSubCategoryChange(e));
 
         quickButtons.forEach(btn => {
             btn.addEventListener('click', (e) => this.handleQuickAction(e));
@@ -72,7 +72,6 @@ class QuickAnalytics {
                 'Dentist',
                 'Emotional Care',
                 'Hobbies',
-                'Mindful Eating',
                 'Relax',
                 'Yoga',
                 'Other'
@@ -107,24 +106,24 @@ class QuickAnalytics {
         // Clear existing options
         taskSelect.innerHTML = '<option value="">Select Sub Category</option>';
         
-        // Also clear client dropdown when category changes
-        const clientSelect = document.getElementById('client');
-        clientSelect.innerHTML = '<option value="">Select Sub Category First</option>';
+        // Also clear sub-sub-category dropdown when category changes
+        const subSubCategorySelect = document.getElementById('subSubCategory');
+        subSubCategorySelect.innerHTML = '<option value="">Select Sub Category First</option>';
         
-        // Hide custom task input when category changes
+        // Hide custom task and sub-sub-category inputs when category changes
         const customTaskGroup = document.getElementById('custom-task-group');
         const customTaskInput = document.getElementById('custom-task');
-        const customClientGroup = document.getElementById('custom-client-group');
-        const customClientInput = document.getElementById('custom-client');
+        const customSubSubCategoryGroup = document.getElementById('custom-subSubCategory-group');
+        const customSubSubCategoryInput = document.getElementById('custom-subSubCategory');
         
         customTaskGroup.style.display = 'none';
         customTaskInput.required = false;
         customTaskInput.value = '';
-        customClientGroup.style.display = 'none';
-        customClientInput.required = false;
-        customClientInput.value = '';
-        clientSelect.disabled = false;
-        clientSelect.style.display = 'block';
+        customSubSubCategoryGroup.style.display = 'none';
+        customSubSubCategoryInput.required = false;
+        customSubSubCategoryInput.value = '';
+        subSubCategorySelect.disabled = false;
+        subSubCategorySelect.style.display = 'block';
 
         // Add tasks for selected category
         if (category && taskOptions[category]) {
@@ -141,35 +140,35 @@ class QuickAnalytics {
 
     handleTaskChange(e) {
         const task = e.target.value;
-        const clientSelect = document.getElementById('client');
+        const subSubCategorySelect = document.getElementById('subSubCategory');
         const customTaskGroup = document.getElementById('custom-task-group');
         const customTaskInput = document.getElementById('custom-task');
         
         // Show/hide custom task input based on selection
-        const customClientGroup = document.getElementById('custom-client-group');
-        const customClientInput = document.getElementById('custom-client');
+        const customSubSubCategoryGroup = document.getElementById('custom-subSubCategory-group');
+        const customSubSubCategoryInput = document.getElementById('custom-subSubCategory');
         
         if (task === 'Other') {
             customTaskGroup.style.display = 'block';
             customTaskInput.required = true;
-            // Hide client dropdown and show custom client input for Other tasks
-            clientSelect.style.display = 'none';
-            customClientGroup.style.display = 'block';
-            customClientInput.required = false; // Optional field
+            // Hide sub-sub-category dropdown and show custom sub-sub-category input for Other tasks
+            subSubCategorySelect.style.display = 'none';
+            customSubSubCategoryGroup.style.display = 'block';
+            customSubSubCategoryInput.required = false; // Optional field
             return;
         } else {
             customTaskGroup.style.display = 'none';
             customTaskInput.required = false;
             customTaskInput.value = '';
-            clientSelect.style.display = 'block';
-            clientSelect.disabled = false;
-            customClientGroup.style.display = 'none';
-            customClientInput.required = false;
-            customClientInput.value = '';
+            subSubCategorySelect.style.display = 'block';
+            subSubCategorySelect.disabled = false;
+            customSubSubCategoryGroup.style.display = 'none';
+            customSubSubCategoryInput.required = false;
+            customSubSubCategoryInput.value = '';
         }
         
-        // Define client options for each task
-        const clientOptions = {
+        // Define sub-sub-category options for each task
+        const subSubCategoryOptions = {
             // Ascension Pathway tasks
             'Admin': ['ML3 Class Index', 'Survey'],
             'Circle': ['Video On', 'Video Off'],
@@ -185,7 +184,7 @@ class QuickAnalytics {
             'Emotional Care': ['Journaling','Contemplation'],
             'Hobbies': ['Knitting','Reading','Audiobook','Podcast'],
             'Relax': ['Bath','Break','Reading','Rest','Sunshine','TV / YouTube'],
-            'Yoga': ['Study','Practice','Weights','Meditation','Tattoo'],
+            'Yoga': ['Study','Practice','Meditation','Tattoo'],
             
             // Home Management tasks
             'Car': ['Service', 'Registration'],
@@ -210,43 +209,43 @@ class QuickAnalytics {
             'Quick Analytics': ['Data Management','Development V2','End of Month Review','Time Entries',]
         };
 
-        // Clear existing options and hide custom client input
-        clientSelect.innerHTML = '<option value="">Select Client/Context</option>';
-        customClientGroup.style.display = 'none';
-        customClientInput.required = false;
-        customClientInput.value = '';
+        // Clear existing options and hide custom sub-sub-category input
+        subSubCategorySelect.innerHTML = '<option value="">Select Sub-Sub Category</option>';
+        customSubSubCategoryGroup.style.display = 'none';
+        customSubSubCategoryInput.required = false;
+        customSubSubCategoryInput.value = '';
         
-        // Add client options for selected task
-        if (task && clientOptions[task]) {
-            clientOptions[task].forEach(client => {
+        // Add sub-sub-category options for selected task
+        if (task && subSubCategoryOptions[task]) {
+            subSubCategoryOptions[task].forEach(subSubCategory => {
                 const option = document.createElement('option');
-                option.value = client;
-                option.textContent = client;
-                clientSelect.appendChild(option);
+                option.value = subSubCategory;
+                option.textContent = subSubCategory;
+                subSubCategorySelect.appendChild(option);
             });
             
             // Always add "Other" option at the end
             const otherOption = document.createElement('option');
             otherOption.value = 'Other';
             otherOption.textContent = 'Other';
-            clientSelect.appendChild(otherOption);
+            subSubCategorySelect.appendChild(otherOption);
         } else {
-            clientSelect.innerHTML = '<option value="">Select Sub Category First</option>';
+            subSubCategorySelect.innerHTML = '<option value="">Select Sub Category First</option>';
         }
     }
 
-    handleClientChange(e) {
-        const client = e.target.value;
-        const customClientGroup = document.getElementById('custom-client-group');
-        const customClientInput = document.getElementById('custom-client');
+    handleSubSubCategoryChange(e) {
+        const subSubCategory = e.target.value;
+        const customSubSubCategoryGroup = document.getElementById('custom-subSubCategory-group');
+        const customSubSubCategoryInput = document.getElementById('custom-subSubCategory');
         
-        if (client === 'Other') {
-            customClientGroup.style.display = 'block';
-            customClientInput.required = false; // Optional field
+        if (subSubCategory === 'Other') {
+            customSubSubCategoryGroup.style.display = 'block';
+            customSubSubCategoryInput.required = false; // Optional field
         } else {
-            customClientGroup.style.display = 'none';
-            customClientInput.required = false;
-            customClientInput.value = '';
+            customSubSubCategoryGroup.style.display = 'none';
+            customSubSubCategoryInput.required = false;
+            customSubSubCategoryInput.value = '';
         }
     }
 
@@ -313,10 +312,10 @@ class QuickAnalytics {
             delete data.customTask;
         }
 
-        // Handle custom client input
-        if (data.client === 'Other' && data.customClient) {
-            data.client = data.customClient;
-            delete data.customClient;
+        // Handle custom sub-sub-category input
+        if (data.subSubCategory === 'Other' && data.customSubSubCategory) {
+            data.subSubCategory = data.customSubSubCategory;
+            delete data.customSubSubCategory;
         }
 
         // Convert date and times to ISO format
