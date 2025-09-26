@@ -3,6 +3,9 @@ require('fake-indexeddb/auto');
 
 global.fetch = jest.fn();
 
+// Load CategoryData for tests
+global.CategoryData = require('../data.js');
+
 Object.defineProperty(window, 'localStorage', {
   value: {
     getItem: jest.fn(),
