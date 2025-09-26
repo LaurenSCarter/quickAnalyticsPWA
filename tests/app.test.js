@@ -15,6 +15,8 @@ beforeAll(() => {
             <select id="category" name="category" required>
                 <option value="">Select Category</option>
                 <option value="Work">Work</option>
+                <option value="Home Management">Home Management</option>
+                <option value="Health">Health</option>
             </select>
             <select id="task" name="task" required>
                 <option value="">Select Category First</option>
@@ -225,6 +227,48 @@ describe('QuickAnalytics', () => {
 
             expect(entries).toEqual(mockEntries);
             expect(localStorage.getItem).toHaveBeenCalledWith('pendingEntries');
+        });
+    });
+
+    describe('Quick Actions', () => {
+        test('should handle pet care quick action with duration', () => {
+            // Create a mock button element
+            const mockButton = {
+                dataset: {
+                    category: 'Home Management',
+                    task: 'Pet Care',
+                    subcategory: 'Dog Walk',
+                    duration: '60'
+                }
+            };
+
+            const mockEvent = { target: mockButton };
+            
+            // Mock the current time to get consistent results
+            const mockNow = new Date('2023-12-01T14:30:00');
+            const originalDate = global.Date;
+            global.Date = class extends originalDate {
+                constructor(...args) {
+                    if (args.length === 0) {
+                        return mockNow;
+                    }
+                    return new originalDate(...args);
+                }
+                static now() {
+                    return mockNow.getTime();
+                }
+            };
+
+            app.handleQuickAction(mockEvent);
+
+            // Verify the form fields are populated correctly
+            expect(document.getElementById('category').value).toBe('Home Management');
+            expect(document.getElementById('task').value).toBe('Pet Care');
+            expect(document.getElementById('subSubCategory').value).toBe('Dog Walk');
+            expect(document.getElementById('start-time').value).toBe('14:30');
+            expect(document.getElementById('end-time').value).toBe('15:30'); // 60 minutes later
+
+            global.Date = originalDate;
         });
     });
 });

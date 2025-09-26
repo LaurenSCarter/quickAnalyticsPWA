@@ -169,17 +169,37 @@ class QuickAnalytics {
         const button = e.target;
         const category = button.dataset.category;
         const task = button.dataset.task;
+        const subSubCategory = button.dataset.subcategory;
+        const duration = parseInt(button.dataset.duration);
 
-        document.getElementById('category').value = category;
-        document.getElementById('task').value = task;
+        // Set category and trigger change to populate task dropdown
+        const categorySelect = document.getElementById('category');
+        categorySelect.value = category;
+        this.handleCategoryChange({ target: categorySelect });
+
+        // Set task and trigger change to populate sub-sub-category dropdown
+        const taskSelect = document.getElementById('task');
+        taskSelect.value = task;
+        this.handleTaskChange({ target: taskSelect });
+
+        // Set sub-sub-category
+        const subSubCategorySelect = document.getElementById('subSubCategory');
+        subSubCategorySelect.value = subSubCategory;
 
         // Set start time to now
         const now = new Date();
-        const timeString = now.toTimeString().slice(0, 5);
-        document.getElementById('start-time').value = timeString;
+        const startTimeString = now.toTimeString().slice(0, 5);
+        document.getElementById('start-time').value = startTimeString;
 
-        // Focus on end time for quick entry
-        document.getElementById('end-time').focus();
+        // Calculate and set end time based on duration
+        if (duration) {
+            const endTime = new Date(now.getTime() + (duration * 60000)); // Add duration in minutes
+            const endTimeString = endTime.toTimeString().slice(0, 5);
+            document.getElementById('end-time').value = endTimeString;
+        }
+
+        // Focus on submit button since everything is filled in
+        document.querySelector('.submit-btn').focus();
     }
 
     async handleSubmit(e) {
