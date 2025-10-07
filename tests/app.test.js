@@ -59,6 +59,24 @@ describe('QuickAnalytics', () => {
         jest.clearAllMocks();
     });
 
+    describe('populateCategories', () => {
+        test('should populate category dropdown from CategoryData', () => {
+            const categorySelect = document.getElementById('category');
+
+            // Clear and repopulate
+            app.populateCategories();
+
+            // Should have default option + 4 categories
+            expect(categorySelect.options.length).toBe(5);
+            expect(categorySelect.options[0].value).toBe('');
+            expect(categorySelect.options[0].textContent).toBe('Select Category');
+            expect(categorySelect.options[1].value).toBe('Ascension Pathway');
+            expect(categorySelect.options[2].value).toBe('Health');
+            expect(categorySelect.options[3].value).toBe('Home Management');
+            expect(categorySelect.options[4].value).toBe('Work');
+        });
+    });
+
     describe('setDefaultDate', () => {
         test('should set date input to local date', () => {
             const dateInput = document.getElementById('date');
