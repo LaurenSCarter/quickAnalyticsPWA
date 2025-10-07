@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#2196F3">
     <meta http-equiv="Permissions-Policy" content="unload=(self https://lookerstudio.google.com https://*.google.com)">
-    <title>Weekly Dashboard</title>
+    <title>Reports - Quick Analytics</title>
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -80,6 +80,48 @@
                 margin: 0.125rem;
             }
         }
+
+        .dashboard-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-selector label {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .dashboard-selector select {
+            flex: 1;
+            max-width: 400px;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            background: var(--secondary-background-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .dashboard-selector select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-selector {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .dashboard-selector select {
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -88,7 +130,7 @@
         <header>
             <div class="header-left">
                 <img src="icons/logo-zinc.svg" alt="Quick Analytics Logo" class="header-logo">
-                <h1>Weekly Dashboard</h1>
+                <h1 id="page-title">Reports</h1>
             </div>
             <div class="status-indicator">
                 <span id="online-status" class="status online">●</span>
@@ -100,11 +142,20 @@
             <a href="index.html">← Back to Time Entry</a>
         </div>
 
+        <div class="page-nav dashboard-selector">
+            <label for="dashboard-select">Select Dashboard:</label>
+            <select id="dashboard-select">
+                <option value="TODAYS_TIME_ENTRIES">Today's Time Entries</option>
+                <option value="WEEKLY_INSPIRATION">Weekly Inspiration Levels</option>
+                <option value="WEEKLY_DASHBOARD">Weekly Time Distribution</option>
+            </select>
+        </div>
+
         <main>
             <iframe id="analytics-iframe" class="analytics-iframe"
                 sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                  allow="unload 'self' https://lookerstudio.google.com"
-                title="Weekly Dashboard">
+                title="Analytics Dashboard">
             </iframe>
         </main>
     </div>
@@ -112,6 +163,63 @@
     <script src="constants.js"></script>
     <script src="data.js"></script>
     <script>
+        // Dashboard configuration
+        const dashboardConfig = {
+            'WEEKLY_DASHBOARD': {
+                url: URLS.WEEKLY_DASHBOARD,
+                title: 'Weekly Dashboard'
+            },
+            'WEEKLY_INSPIRATION': {
+                url: URLS.WEEKLY_INSPIRATION,
+                title: 'Weekly Inspiration'
+            },
+            'TODAYS_TIME_ENTRIES': {
+                url: URLS.TODAYS_TIME_ENTRIES,
+                title: "Today's Time Entries"
+            }
+        };
+
+        // Get dashboard from URL parameter or localStorage
+        function getSelectedDashboard() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlDashboard = urlParams.get('dashboard');
+
+            if (urlDashboard && dashboardConfig[urlDashboard]) {
+                return urlDashboard;
+            }
+
+            const savedDashboard = localStorage.getItem('selectedDashboard');
+            if (savedDashboard && dashboardConfig[savedDashboard]) {
+                return savedDashboard;
+            }
+
+            return 'WEEKLY_DASHBOARD'; // Default
+        }
+
+        // Load selected dashboard
+        function loadDashboard(dashboardKey) {
+            const config = dashboardConfig[dashboardKey];
+            if (!config) return;
+
+            // Update iframe
+            document.getElementById('analytics-iframe').src = config.url;
+
+            // Update page title
+            document.getElementById('page-title').textContent = config.title;
+            document.title = `${config.title} - Quick Analytics`;
+
+            // Update iframe title attribute
+            document.getElementById('analytics-iframe').title = config.title;
+
+            // Save to localStorage
+            localStorage.setItem('selectedDashboard', dashboardKey);
+
+            // Update URL without reload
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('dashboard', dashboardKey);
+            window.history.replaceState({}, '', newUrl);
+        }
+
         // Update online status
         function updateOnlineStatus() {
             const statusIndicator = document.getElementById('online-status');
@@ -126,8 +234,18 @@
             }
         }
 
-        // Set iframe src using constants
-        document.getElementById('analytics-iframe').src = URLS.WEEKLY_DASHBOARD;
+        // Initialize
+        const dashboardSelect = document.getElementById('dashboard-select');
+        const initialDashboard = getSelectedDashboard();
+
+        // Set select value and load dashboard
+        dashboardSelect.value = initialDashboard;
+        loadDashboard(initialDashboard);
+
+        // Listen for dashboard changes
+        dashboardSelect.addEventListener('change', (e) => {
+            loadDashboard(e.target.value);
+        });
 
         // Initialize online status
         updateOnlineStatus();
