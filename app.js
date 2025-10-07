@@ -5,6 +5,7 @@ class QuickAnalytics {
     }
 
     init() {
+        this.populateCategories();
         this.bindEvents();
         this.updateOnlineStatus();
         this.loadPendingEntries();
@@ -13,6 +14,22 @@ class QuickAnalytics {
         // Listen for online/offline events
         window.addEventListener('online', () => this.handleOnlineStatus(true));
         window.addEventListener('offline', () => this.handleOnlineStatus(false));
+    }
+
+    populateCategories() {
+        const categorySelect = document.getElementById('category');
+        const categories = CategoryData.categories;
+
+        // Clear existing options except the default
+        categorySelect.innerHTML = '<option value="">Select Category</option>';
+
+        // Add category options from data.js
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            categorySelect.appendChild(option);
+        });
     }
 
     bindEvents() {
@@ -334,7 +351,7 @@ class QuickAnalytics {
 
 
         // Show popup for successful HTTP 200 response
-        var message = `Success: Time entry has been logged with result: ${result}`;
+        var message = `Success: Time entry has been logged with result: ${result.message}`;
         console.log(message);
 
         return result;

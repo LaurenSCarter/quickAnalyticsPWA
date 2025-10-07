@@ -1,5 +1,13 @@
 // Category and task data for Quick Analytics PWA
 const CategoryData = {
+    // Define available categories
+    categories: [
+        'Ascension Pathway',
+        'Health',
+        'Home Management',
+        'Work'
+    ],
+
     // Define tasks for each category
     taskOptions: {
         'Ascension Pathway': [
@@ -61,11 +69,10 @@ const CategoryData = {
         
         // Health tasks
         'Body Care': ['Personal Hygiene','Mindful Eating','Gym','Rest','Sauna','Sick'],
-        'Dentist': ['Check Appointment','Attend Appointment'],
         'Emotional Care': ['Journaling','Contemplation'],
-        'Hobbies': ['Knitting','Reading','Audiobook','Podcast'],
+        'Hobbies': ['Knitting','Reading','Audiobook','Podcast','Content Liberation'],
         'Relax': ['Bath','Break','Reading','Rest','Sunshine','TV / YouTube'],
-        'Yoga': ['Study','Practice','Meditation','Tattoo'],
+        'Yoga': ['Study','Practice','Meditation'],
         
         // Home Management tasks
         'Car': ['Service', 'Registration'],
@@ -80,7 +87,7 @@ const CategoryData = {
         'Strata': ['Communication','Yard Work'],
         
         // Work tasks
-        'Computer Maintenance': ['System Updates','Security','Dev Setup','Cloud Storage','Content Liberation','Google Photo Settings','Share Recordings to PC','Clean Android Internal Drive','Laptop Battery','Review Key Commands','Troubleshoot Network Congestion','Resolve DNS Issues'],
+        'Computer Maintenance': ['System Updates','Security','Dev Setup','Cloud Storage','Google Photo Settings','Share Recordings to PC','Clean Android Internal Drive','Laptop Battery','Review Key Commands','Troubleshoot Network Congestion','Resolve DNS Issues'],
         'Domestic Angel': ['Product Development','Website V2'],
         'Job Applications': [],
         'Overhead': ['Commute','Daily Setup'],
