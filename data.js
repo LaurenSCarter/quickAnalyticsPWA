@@ -21,6 +21,7 @@ const CategoryData = {
             'Other'
         ],
         'Health': [
+            'Life Overhead',
             'Body Care',
             'Dentist',
             'Emotional Care',
@@ -68,6 +69,7 @@ const CategoryData = {
         'Prayer Partner': ['Andree','Sara','Cora','Julie'],
         
         // Health tasks
+        'Life Overhead': ['Wake up', 'Lunch', 'Break', 'Breakfast'],
         'Body Care': ['Personal Hygiene','Mindful Eating','Gym','Rest','Sauna','Sick'],
         'Emotional Care': ['Journaling','Contemplation'],
         'Hobbies': ['Knitting','Reading','Audiobook','Podcast','Content Liberation'],
