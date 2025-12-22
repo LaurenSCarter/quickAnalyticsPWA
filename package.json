@@ -4,6 +4,8 @@
   "description": "A Progressive Web App for time tracking and analytics",
   "main": "app.js",
   "scripts": {
+    "start": "http-server -p 8080 -c-1",
+    "dev": "http-server -p 8080 -c-1 -o",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
@@ -12,6 +14,7 @@
     "@testing-library/dom": "^9.3.4",
     "@testing-library/jest-dom": "^6.1.4",
     "fake-indexeddb": "^5.0.2",
+    "http-server": "^14.1.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0"
   },
