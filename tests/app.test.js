@@ -1,7 +1,7 @@
 const { screen } = require('@testing-library/dom');
 
 const mockUrls = {
-    API_SCRIPT: 'https://test-api.example.com'
+    TIME_ENTRY_ENDPOINT: 'https://test-api.example.com'
 };
 
 beforeAll(() => {
@@ -201,7 +201,7 @@ describe('QuickAnalytics', () => {
 
             await app.submitToAPI(testData);
 
-            expect(fetch).toHaveBeenCalledWith(mockUrls.API_SCRIPT, {
+            expect(fetch).toHaveBeenCalledWith(mockUrls.TIME_ENTRY_ENDPOINT, {
                 redirect: "follow",
                 method: 'POST',
                 headers: {

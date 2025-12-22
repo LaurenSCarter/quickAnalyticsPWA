@@ -18,6 +18,142 @@
     <link rel="icon" href="/icons/favicon.ico" />
 
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Home screen specific styles */
+        .home-main {
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            min-height: calc(100vh - 120px);
+        }
+
+        .home-welcome {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .home-welcome h2 {
+            color: var(--main-heading-color);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .home-welcome p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .nav-cards {
+            display: grid;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .nav-card {
+            background: white;
+            border: 2px solid var(--secondary-background-color);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            min-height: 140px;
+            justify-content: center;
+        }
+
+        .nav-card:hover,
+        .nav-card:active {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(2, 95, 96, 0.15);
+            border-color: var(--main-background-color-lighter);
+        }
+
+        .nav-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--main-heading-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-card-description {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .nav-card.time {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+        }
+
+        .nav-card.doom {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f0 100%);
+        }
+
+        .secondary-nav {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .secondary-link {
+            color: var(--main-font-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            background: var(--tertiary-background-color);
+            border: 2px solid var(--secondary-background-color);
+            transition: all 0.3s ease;
+        }
+
+        .secondary-link:hover {
+            color: var(--main-link-hover);
+            border-color: var(--main-background-color-lighter);
+            background: var(--secondary-background-color-lighter);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .home-main {
+                padding: 1.5rem 1rem;
+            }
+
+            .home-welcome h2 {
+                font-size: 1.5rem;
+            }
+
+            .nav-card {
+                padding: 1.5rem 1rem;
+                min-height: 120px;
+            }
+
+            .nav-card-icon {
+                font-size: 2.5rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .nav-card-title {
+                font-size: 1.25rem;
+            }
+
+            .nav-card-description {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -33,108 +169,35 @@
             </div>
         </header>
 
-        <div class="page-nav">
-            <a href="reports.html" class="dashboard-link">View Reports →</a>
-        </div>
-
-        <main>
-            <form id="time-entry-form" class="entry-form">
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date" name="date">
-                </div>
-
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <select id="category" name="category" required>
-                        <option value="">Select Category</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="task">Sub Category</label>
-                    <select id="task" name="task" required>
-                        <option value="">Select Category First</option>
-                    </select>
-                </div>
-
-                <div class="form-group" id="custom-task-group" style="display: none;">
-                    <label for="custom-task">Custom Sub Category</label>
-                    <input type="text" id="custom-task" name="customTask" placeholder="Enter your custom task">
-                </div>
-
-                <div class="form-group">
-                    <label for="subSubCategory">Sub-Sub Category</label>
-                    <select id="subSubCategory" name="subSubCategory">
-                        <option value="">Select Sub Category First</option>
-                    </select>
-                </div>
-
-                <div class="form-group" id="custom-subSubCategory-group" style="display: none;">
-                    <label for="custom-subSubCategory">Custom Sub-Sub Category</label>
-                    <input type="text" id="custom-subSubCategory" name="customSubSubCategory" placeholder="Enter your custom sub-sub category">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="start-time">Start Time</label>
-                        <input type="time" id="start-time" name="startTime" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="end-time">End Time</label>
-                        <input type="time" id="end-time" name="endTime" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="energy">Inspiration (Life Force Enhancing)</label>
-                    <p>Did you find this activity life force enhancing and inspirational? or was it frustrating and draining</p>
-                    <input type="range" id="energy" name="energy" min="-5" max="5" value="0" class="energy-slider">
-                    <div class="energy-labels">
-                        <span>Draining (-5)</span>
-                        <span id="energy-value">0</span>
-                        <span>Inspiring (+5)</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="notes">Notes</label>
-                    <textarea id="notes" name="notes" placeholder="Any additional context..." rows="3"></textarea>
-                </div>
-
-                <button type="submit" class="submit-btn">
-                    <span class="btn-text">Log Time Entry</span>
-                    <span class="btn-spinner" style="display: none;">⏳</span>
-                </button>
-            </form>
-
-            <div id="message" class="message" style="display: none;"></div>
-
-            <div class="quick-actions">
-                <h3>Quick Actions</h3>
-                <button class="quick-btn" data-category="Home Management" data-task="Pet Care" data-subcategory="Take Pets Out" data-duration="10">Take Pets Out (10 min)</button>
-                <button class="quick-btn" data-category="Home Management" data-task="Pet Care" data-subcategory="Dog Walk" data-duration="60">Dog Walk (1 hour)</button>
-                <button class="quick-btn" data-category="Home Management" data-task="Pet Care" data-subcategory="Feed Pets" data-duration="15">Feed Pets (15 min)</button>
-                <button class="quick-btn" data-category="Health" data-task="Life Overhead" data-subcategory="Wake up" data-duration="60">Wake Up (1 hour)</button>
-                <button class="quick-btn" data-category="Ascension Pathway" data-task="Class" data-subcategory="Replay" data-duration="90">ML Class (1.5 hour)</button>
-                <button class="quick-btn" data-category="Home Management" data-task="Cleaning" data-subcategory="Kitchen" data-duration="15">Kitchen Cleaning (15 min)</button>
-                <button class="quick-btn" data-category="Home Management" data-task="Cooking" data-subcategory="Food Prep" data-duration="30">Cooking (30 min)</button>
-                <button class="quick-btn" data-category="Home Management" data-task="Cleaning" data-subcategory="Laundry" data-duration="15">Laundry (15 min)</button>
-                <button class="quick-btn" data-category="Health" data-task="Yoga" data-subcategory="Practice" data-duration="60">Yoga Practice (1 hour)</button>
+        <main class="home-main">
+            <div class="home-welcome">
+                <h2>What would you like to log?</h2>
+                <p>Choose an activity to track your time and insights</p>
             </div>
 
-            <div class="pending-entries" id="pending-entries" style="display: none;">
-                <h3>Pending Sync</h3>
-                <div id="pending-list"></div>
-                <button id="sync-now" class="sync-btn">Sync Now</button>
+            <div class="nav-cards">
+                <a href="logTime.html" class="nav-card time">
+                    <div class="nav-card-icon">⏱️</div>
+                    <div class="nav-card-title">Log Time</div>
+                    <div class="nav-card-description">Track your productive activities and time spent</div>
+                </a>
+
+                <a href="logDoom.html" class="nav-card doom">
+                    <div class="nav-card-icon">📱</div>
+                    <div class="nav-card-title">Log Doom Scroll</div>
+                    <div class="nav-card-description">Record social media and browsing sessions</div>
+                </a>
+            </div>
+
+            <div class="secondary-nav">
+                <a href="reports.html" class="secondary-link">
+                    View Reports & Analytics →
+                </a>
             </div>
         </main>
     </div>
 
     <script src="constants.js"></script>
-    <script src="data.js"></script>
-    <script src="app.js"></script>
     <script>
         // Register Service Worker
         if ('serviceWorker' in navigator) {
@@ -144,6 +207,27 @@
                     .catch(error => console.log('SW registration failed'));
             });
         }
+
+        // Update online status
+        function updateOnlineStatus() {
+            const statusIndicator = document.getElementById('online-status');
+            const statusText = document.getElementById('status-text');
+
+            if (navigator.onLine) {
+                statusIndicator.className = 'status online';
+                statusText.textContent = 'Online';
+            } else {
+                statusIndicator.className = 'status offline';
+                statusText.textContent = 'Offline';
+            }
+        }
+
+        // Initialize and listen for online/offline events
+        document.addEventListener('DOMContentLoaded', () => {
+            updateOnlineStatus();
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+        });
     </script>
 </body>
 

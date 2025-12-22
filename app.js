@@ -1,6 +1,6 @@
 class QuickAnalytics {
     constructor() {
-        this.apiUrl = URLS.API_SCRIPT; // Replace with latest deployment APP SCRIPT URL
+        this.apiUrl = URLS.TIME_ENTRY_ENDPOINT; // Replace with latest deployment APP SCRIPT URL
         this.init();
     }
 

@@ -1,9 +1,14 @@
-const CACHE_NAME = 'quick-analytics-v1';
+const CACHE_NAME = 'quick-analytics-v3';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/logTime.html',
+  '/logDoom.html',
   '/styles.css',
   '/app.js',
+  '/doomScroll.js',
+  '/data.js',
+  '/constants.js',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png'
