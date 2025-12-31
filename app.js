@@ -1,6 +1,6 @@
 class QuickAnalytics {
     constructor() {
-        this.apiUrl = URLS.TIME_ENTRY_ENDPOINT; // Replace with latest deployment APP SCRIPT URL
+        this.apiUrl = URLS.LOG_ENTRY_ENDPOINT; // Replace with latest deployment APP SCRIPT URL
         this.init();
     }
 
@@ -316,6 +316,7 @@ class QuickAnalytics {
         // URI encode timestamp values for safe transmission
         const encodedData = {
             ...data,
+            entryType: "logTime",  // need to define the type of entry so the endpoint can process properly
             startTime: encodeURIComponent(data.startTime),
             endTime: encodeURIComponent(data.endTime),
             client: data.subSubCategory  // Backend expects 'client' field name

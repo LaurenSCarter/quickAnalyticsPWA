@@ -5,7 +5,7 @@
  */
 class DoomScrollTracker {
     constructor() {
-        this.apiUrl = URLS.DOOM_SCROLL_ENDPOINT;
+        this.apiUrl = URLS.LOG_ENTRY_ENDPOINT;
         this.init();
     }
 
@@ -167,7 +167,15 @@ class DoomScrollTracker {
      * Submit data to Google Apps Script endpoint
      */
     async submitToAPI(data) {
-        console.log('Submitting doom scroll data:', JSON.stringify(data));
+
+        // URI encode timestamp values for safe transmission
+        const encodedData = {
+            entryType: "doomScroll",
+            ...data,
+            startTime: encodeURIComponent(data.startTime),
+        };
+        
+        console.log('Submitting doom scroll data:', JSON.stringify(encodedData));
 
         const response = await fetch(this.apiUrl, {
             redirect: "follow",
@@ -175,7 +183,7 @@ class DoomScrollTracker {
             headers: {
                 'Content-Type': 'text/plain',
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(encodedData),
         });
 
         if (!response.ok) {
