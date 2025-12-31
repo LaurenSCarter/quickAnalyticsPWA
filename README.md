@@ -36,6 +36,6 @@ Feeling impatient?  Check the google spreadsheet and the logs (if cloud logging 
 
 ## Adjust Branding
 
-- Add your own icons as needed.  It is a good idea to include a favicon.ico, and a simple manifest of icons.  I included an inverse logo that has been applied to the header of each page.  You may need to directly adjust the icon the header uses in the HTML.
+- Add your own icons as needed.  See the icons folder for what is already there.
 
 - Colours are easy to update. A basic colour palette is defined in the root: of the CSS. Updating the colours here will propagate throughout the solution.  Note:  Some colours are not in use, but they are provided for extensibility in the future.
