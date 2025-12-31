@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2196F3">
+    <title>Quick Analytics - Pet Analytics</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- iOS PWA Support -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Quick Analytics">
+
+    <link rel="icon" href="/icons/favicon.ico" />
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-left">
+                <img src="icons/logo-zinc.svg" alt="Quick Analytics Logo" class="header-logo">
+                <h1>Pet Analytics</h1>
+            </div>
+            <div class="status-indicator">
+                <span id="online-status" class="status online">●</span>
+                <span id="status-text">Online</span>
+            </div>
+        </header>
+
+        <div class="page-nav">
+            <a href="index.html">← Home</a>
+            <a href="reports.html" class="dashboard-link">View Reports →</a>
+        </div>
+
+        <main>
+            <form id="pet-analytics-form" class="entry-form">
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="time">Time</label>
+                    <input type="time" id="time" name="time" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="petName">Pet Name</label>
+                    <select id="petName" name="petName" required>
+                        <option value="">Select Pet</option>
+                        <option value="Sabine">Sabine</option>
+                        <option value="Beasley">Beasley</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="behaviour">Behaviour</label>
+                    <select id="behaviour" name="behaviour" required>
+                        <option value="">Select Behaviour</option>
+                        <option value="Attention Seeking">Attention Seeking</option>
+                        <option value="Hungry">Hungry</option>
+                        <option value="Bored">Bored</option>
+                        <option value="Aggitated">Aggitated</option>
+                        <option value="Happy">Happy</option>
+                        <option value="Content">Content</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea id="notes" name="notes" placeholder="Any additional context..." rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">Log Pet Behavior</span>
+                    <span class="btn-spinner" style="display: none;">⏳</span>
+                </button>
+            </form>
+
+            <div id="message" class="message" style="display: none;"></div>
+
+            <div class="pending-entries" id="pending-entries" style="display: none;">
+                <h3>Pending Sync</h3>
+                <div id="pending-list"></div>
+                <button id="sync-now" class="sync-btn">Sync Now</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="constants.js"></script>
+    <script src="petAnalytics.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(error => console.log('SW registration failed'));
+            });
+        }
+    </script>
+</body>
+
+</html>
