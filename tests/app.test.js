@@ -1,7 +1,7 @@
 const { screen } = require('@testing-library/dom');
 
 const mockUrls = {
-    TIME_ENTRY_ENDPOINT: 'https://test-api.example.com'
+    LOG_ENTRY_ENDPOINT: 'https://test-api.example.com'
 };
 
 beforeAll(() => {
@@ -186,6 +186,7 @@ describe('QuickAnalytics', () => {
     describe('submitToAPI', () => {
         test('should make fetch request with correct parameters', async () => {
             const testData = {
+                entryType: "logTime", 
                 date: '2023-12-01',
                 category: 'Work',
                 task: 'Meeting',
@@ -201,7 +202,7 @@ describe('QuickAnalytics', () => {
 
             await app.submitToAPI(testData);
 
-            expect(fetch).toHaveBeenCalledWith(mockUrls.TIME_ENTRY_ENDPOINT, {
+            expect(fetch).toHaveBeenCalledWith(mockUrls.LOG_ENTRY_ENDPOINT, {
                 redirect: "follow",
                 method: 'POST',
                 headers: {
@@ -261,7 +262,7 @@ describe('QuickAnalytics', () => {
             };
 
             const mockEvent = { target: mockButton };
-            
+
             // Mock the current time to get consistent results
             const mockNow = new Date('2023-12-01T14:30:00');
             const originalDate = global.Date;
@@ -287,6 +288,201 @@ describe('QuickAnalytics', () => {
             expect(document.getElementById('end-time').value).toBe('15:30'); // 60 minutes later
 
             global.Date = originalDate;
+        });
+    });
+
+    describe('updateEnergyValue', () => {
+        test('should update energy value display', () => {
+            const energySlider = document.getElementById('energy');
+            const energyValue = document.getElementById('energy-value');
+
+            energySlider.value = '3';
+            const event = { target: energySlider };
+
+            app.updateEnergyValue(event);
+
+            expect(energyValue.textContent).toBe('3');
+        });
+
+        test('should handle negative energy values', () => {
+            const energySlider = document.getElementById('energy');
+            const energyValue = document.getElementById('energy-value');
+
+            energySlider.value = '-4';
+            const event = { target: energySlider };
+
+            app.updateEnergyValue(event);
+
+            expect(energyValue.textContent).toBe('-4');
+        });
+    });
+
+    describe('showMessage', () => {
+        test('should display success message', () => {
+            const messageEl = document.getElementById('message');
+
+            app.showMessage('Time logged successfully!', 'success');
+
+            expect(messageEl.textContent).toBe('Time logged successfully!');
+            expect(messageEl.className).toBe('message success');
+            expect(messageEl.style.display).toBe('block');
+        });
+
+        test('should display error message', () => {
+            const messageEl = document.getElementById('message');
+
+            app.showMessage('Failed to log time', 'error');
+
+            expect(messageEl.textContent).toBe('Failed to log time');
+            expect(messageEl.className).toBe('message error');
+            expect(messageEl.style.display).toBe('block');
+        });
+    });
+
+    describe('setLoading', () => {
+        test('should disable button and show spinner when loading', () => {
+            const button = document.querySelector('.submit-btn');
+            const text = button.querySelector('.btn-text');
+            const spinner = button.querySelector('.btn-spinner');
+
+            app.setLoading(true);
+
+            expect(button.disabled).toBe(true);
+            expect(text.style.display).toBe('none');
+            expect(spinner.style.display).toBe('inline');
+        });
+
+        test('should enable button and hide spinner when not loading', () => {
+            const button = document.querySelector('.submit-btn');
+            const text = button.querySelector('.btn-text');
+            const spinner = button.querySelector('.btn-spinner');
+
+            app.setLoading(false);
+
+            expect(button.disabled).toBe(false);
+            expect(text.style.display).toBe('inline');
+            expect(spinner.style.display).toBe('none');
+        });
+    });
+
+    describe('updateOnlineStatus', () => {
+        test('should show online status when navigator.onLine is true', () => {
+            Object.defineProperty(navigator, 'onLine', {
+                writable: true,
+                value: true
+            });
+
+            app.updateOnlineStatus();
+
+            const statusIndicator = document.getElementById('online-status');
+            const statusText = document.getElementById('status-text');
+
+            expect(statusIndicator.className).toBe('status online');
+            expect(statusText.textContent).toBe('Online');
+        });
+
+        test('should show offline status when navigator.onLine is false', () => {
+            Object.defineProperty(navigator, 'onLine', {
+                writable: true,
+                value: false
+            });
+
+            app.updateOnlineStatus();
+
+            const statusIndicator = document.getElementById('online-status');
+            const statusText = document.getElementById('status-text');
+
+            expect(statusIndicator.className).toBe('status offline');
+            expect(statusText.textContent).toBe('Offline');
+        });
+    });
+
+    describe('prepareData - energy conversion', () => {
+        test('should convert energy string to number', () => {
+            const formData = new FormData();
+            formData.set('date', '2023-12-01');
+            formData.set('category', 'Work');
+            formData.set('task', 'Meeting');
+            formData.set('startTime', '09:00');
+            formData.set('endTime', '10:00');
+            formData.set('energy', '-3');
+            formData.set('notes', 'Low energy meeting');
+
+            const result = app.prepareData(formData);
+
+            expect(result.energy).toBe(-3);
+            expect(typeof result.energy).toBe('number');
+        });
+    });
+
+    describe('submitToAPI - error handling', () => {
+        test('should handle API error response', async () => {
+            const testData = {
+                entryType: "logTime",
+                date: '2023-12-01',
+                category: 'Work',
+                task: 'Meeting',
+                startTime: '2023-12-01T09:00:00Z',
+                endTime: '2023-12-01T10:00:00Z',
+                energy: 3
+            };
+
+            fetch.mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve({ error: 'Invalid time range' })
+            });
+
+            await expect(app.submitToAPI(testData)).rejects.toThrow('Invalid time range');
+        });
+
+        test('should properly encode URI components in request', async () => {
+            const testData = {
+                entryType: "logTime",
+                date: '2023-12-01',
+                category: 'Work',
+                task: 'Meeting',
+                startTime: '2023-12-01T09:00:00Z',
+                endTime: '2023-12-01T10:00:00Z',
+                energy: 0
+            };
+
+            fetch.mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve({ success: true })
+            });
+
+            await app.submitToAPI(testData);
+
+            const callArgs = fetch.mock.calls[0];
+            const bodyData = JSON.parse(callArgs[1].body);
+
+            expect(bodyData.startTime).toBe(encodeURIComponent('2023-12-01T09:00:00Z'));
+            expect(bodyData.endTime).toBe(encodeURIComponent('2023-12-01T10:00:00Z'));
+        });
+    });
+
+    describe('offline functionality - queue management', () => {
+        test('should append to existing queue', () => {
+            const existingEntries = [
+                { category: 'Work', task: 'Meeting', timestamp: '2023-12-01T10:00:00Z', id: '111' }
+            ];
+            localStorage.getItem.mockReturnValue(JSON.stringify(existingEntries));
+
+            const newData = { category: 'Health', task: 'Exercise' };
+            app.saveToQueue(newData);
+
+            const savedData = JSON.parse(localStorage.setItem.mock.calls[0][1]);
+            expect(savedData).toHaveLength(2);
+            expect(savedData[0].category).toBe('Work');
+            expect(savedData[1].category).toBe('Health');
+        });
+
+        test('should handle empty pending entries', () => {
+            localStorage.getItem.mockReturnValue(null);
+
+            const entries = app.getPendingEntries();
+
+            expect(entries).toEqual([]);
         });
     });
 });
