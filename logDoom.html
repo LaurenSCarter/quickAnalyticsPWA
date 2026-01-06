@@ -58,9 +58,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="emotion">Emotion</label>
-                    <select id="emotion" name="emotion" required>
-                        <option value="">Select Emotion</option>
+                    <label for="driving-emotion">Driving Emotion (select multiple)</label>
+                    <select id="driving-emotion" name="drivingEmotion" multiple required size="7">
                         <option value="bored">Bored</option>
                         <option value="sad">Sad</option>
                         <option value="excited">Excited</option>
@@ -71,9 +70,47 @@
                     </select>
                 </div>
 
-                <div class="form-group" id="custom-emotion-group" style="display: none;">
-                    <label for="custom-emotion">Custom Emotion</label>
-                    <input type="text" id="custom-emotion" name="customEmotion" placeholder="Enter your emotion">
+                <div class="form-group" id="custom-driving-emotion-group" style="display: none;">
+                    <label for="custom-driving-emotion">Custom Driving Emotion</label>
+                    <input type="text" id="custom-driving-emotion" name="customDrivingEmotion" placeholder="Enter your emotion">
+                </div>
+
+                <div class="form-group">
+                    <label for="driving-emotion-intensity">Driving Emotion Intensity</label>
+                    <input type="range" id="driving-emotion-intensity" name="drivingEmotionIntensity" min="0" max="10" value="5" class="energy-slider" required>
+                    <div class="energy-labels">
+                        <span>Low (0)</span>
+                        <span id="driving-intensity-value">5</span>
+                        <span>High (10)</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="resulting-emotion">Resulting Emotion (select multiple)</label>
+                    <select id="resulting-emotion" name="resultingEmotion" multiple required size="6">
+                        <option value="empty">Empty</option>
+                        <option value="sad">Sad</option>
+                        <option value="depressed">Depressed</option>
+                        <option value="unfulfilled">Unfulfilled</option>
+                        <option value="self righteous">Self Righteous</option>
+                        <option value="vindicated">Vindicated</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="custom-resulting-emotion-group" style="display: none;">
+                    <label for="custom-resulting-emotion">Custom Resulting Emotion</label>
+                    <input type="text" id="custom-resulting-emotion" name="customResultingEmotion" placeholder="Enter your emotion">
+                </div>
+
+                <div class="form-group">
+                    <label for="resulting-emotion-intensity">Resulting Emotion Intensity</label>
+                    <input type="range" id="resulting-emotion-intensity" name="resultingEmotionIntensity" min="0" max="10" value="5" class="energy-slider" required>
+                    <div class="energy-labels">
+                        <span>Low (0)</span>
+                        <span id="resulting-intensity-value">5</span>
+                        <span>High (10)</span>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -82,6 +119,7 @@
                         <option value="">Select App</option>
                         <option value="youTube">YouTube</option>
                         <option value="reddit">Reddit</option>
+                        <option value="facebook">Facebook</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>

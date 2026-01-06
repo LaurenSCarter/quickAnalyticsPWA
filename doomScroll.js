@@ -23,11 +23,17 @@ class DoomScrollTracker {
     bindEvents() {
         const form = document.getElementById('doom-scroll-form');
         const syncButton = document.getElementById('sync-now');
-        const emotionSelect = document.getElementById('emotion');
+        const drivingEmotionSelect = document.getElementById('driving-emotion');
+        const resultingEmotionSelect = document.getElementById('resulting-emotion');
+        const drivingIntensitySlider = document.getElementById('driving-emotion-intensity');
+        const resultingIntensitySlider = document.getElementById('resulting-emotion-intensity');
         const appSelect = document.getElementById('app');
 
         form.addEventListener('submit', (e) => this.handleSubmit(e));
-        emotionSelect.addEventListener('change', (e) => this.handleEmotionChange(e));
+        drivingEmotionSelect.addEventListener('change', (e) => this.handleDrivingEmotionChange(e));
+        resultingEmotionSelect.addEventListener('change', (e) => this.handleResultingEmotionChange(e));
+        drivingIntensitySlider.addEventListener('input', (e) => this.updateDrivingIntensityValue(e));
+        resultingIntensitySlider.addEventListener('input', (e) => this.updateResultingIntensityValue(e));
         appSelect.addEventListener('change', (e) => this.handleAppChange(e));
 
         if (syncButton) {
@@ -43,21 +49,55 @@ class DoomScrollTracker {
     }
 
     /**
-     * Show/hide custom emotion input when "Other" is selected
+     * Show/hide custom driving emotion input when "Other" is selected
      */
-    handleEmotionChange(e) {
-        const emotion = e.target.value;
-        const customEmotionGroup = document.getElementById('custom-emotion-group');
-        const customEmotionInput = document.getElementById('custom-emotion');
+    handleDrivingEmotionChange(e) {
+        const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+        const customDrivingEmotionGroup = document.getElementById('custom-driving-emotion-group');
+        const customDrivingEmotionInput = document.getElementById('custom-driving-emotion');
 
-        if (emotion === 'Other') {
-            customEmotionGroup.style.display = 'block';
-            customEmotionInput.required = true;
+        if (selectedOptions.includes('Other')) {
+            customDrivingEmotionGroup.style.display = 'block';
+            customDrivingEmotionInput.required = true;
         } else {
-            customEmotionGroup.style.display = 'none';
-            customEmotionInput.required = false;
-            customEmotionInput.value = '';
+            customDrivingEmotionGroup.style.display = 'none';
+            customDrivingEmotionInput.required = false;
+            customDrivingEmotionInput.value = '';
         }
+    }
+
+    /**
+     * Show/hide custom resulting emotion input when "Other" is selected
+     */
+    handleResultingEmotionChange(e) {
+        const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+        const customResultingEmotionGroup = document.getElementById('custom-resulting-emotion-group');
+        const customResultingEmotionInput = document.getElementById('custom-resulting-emotion');
+
+        if (selectedOptions.includes('Other')) {
+            customResultingEmotionGroup.style.display = 'block';
+            customResultingEmotionInput.required = true;
+        } else {
+            customResultingEmotionGroup.style.display = 'none';
+            customResultingEmotionInput.required = false;
+            customResultingEmotionInput.value = '';
+        }
+    }
+
+    /**
+     * Update driving emotion intensity value display
+     */
+    updateDrivingIntensityValue(e) {
+        const value = e.target.value;
+        document.getElementById('driving-intensity-value').textContent = value;
+    }
+
+    /**
+     * Update resulting emotion intensity value display
+     */
+    updateResultingIntensityValue(e) {
+        const value = e.target.value;
+        document.getElementById('resulting-intensity-value').textContent = value;
     }
 
     /**
@@ -117,16 +157,52 @@ class DoomScrollTracker {
     prepareData(formData) {
         const data = {};
 
-        // Get form values
+        // Get driving emotions (multiple selection)
+        const drivingEmotionSelect = document.getElementById('driving-emotion');
+        const selectedDrivingEmotions = Array.from(drivingEmotionSelect.selectedOptions)
+            .map(option => option.value)
+            .filter(value => value !== 'Other');
+
+        // Get resulting emotions (multiple selection)
+        const resultingEmotionSelect = document.getElementById('resulting-emotion');
+        const selectedResultingEmotions = Array.from(resultingEmotionSelect.selectedOptions)
+            .map(option => option.value)
+            .filter(value => value !== 'Other');
+
+        // Get other form values
         for (let [key, value] of formData.entries()) {
-            data[key] = value;
+            if (key !== 'drivingEmotion' && key !== 'resultingEmotion') {
+                data[key] = value;
+            }
         }
 
-        // Handle custom emotion input
-        if (data.emotion === 'Other' && data.customEmotion) {
-            data.emotion = data.customEmotion;
+        // Handle custom driving emotion input
+        const customDrivingEmotion = formData.get('customDrivingEmotion');
+        if (customDrivingEmotion && selectedDrivingEmotions.length === 0) {
+            // If "Other" was the only selection
+            data.drivingEmotion = customDrivingEmotion;
+        } else if (customDrivingEmotion) {
+            // Append custom emotion to selected emotions
+            selectedDrivingEmotions.push(customDrivingEmotion);
+            data.drivingEmotion = selectedDrivingEmotions.join(', ');
+        } else {
+            data.drivingEmotion = selectedDrivingEmotions.join(', ');
         }
-        delete data.customEmotion;
+        delete data.customDrivingEmotion;
+
+        // Handle custom resulting emotion input
+        const customResultingEmotion = formData.get('customResultingEmotion');
+        if (customResultingEmotion && selectedResultingEmotions.length === 0) {
+            // If "Other" was the only selection
+            data.resultingEmotion = customResultingEmotion;
+        } else if (customResultingEmotion) {
+            // Append custom emotion to selected emotions
+            selectedResultingEmotions.push(customResultingEmotion);
+            data.resultingEmotion = selectedResultingEmotions.join(', ');
+        } else {
+            data.resultingEmotion = selectedResultingEmotions.join(', ');
+        }
+        delete data.customResultingEmotion;
 
         // Handle custom app input
         if (data.app === 'Other' && data.customApp) {
@@ -139,6 +215,10 @@ class DoomScrollTracker {
         data.startTime = `${date}T${data.startTime}:00Z`;
         data.endTime = `${date}T${data.endTime}:00Z`;
 
+        // Convert intensity values to numbers
+        data.drivingEmotionIntensity = parseInt(data.drivingEmotionIntensity);
+        data.resultingEmotionIntensity = parseInt(data.resultingEmotionIntensity);
+
         // Keep the date field for API payload
         data.date = date;
 
@@ -149,7 +229,7 @@ class DoomScrollTracker {
      * Validate required fields
      */
     validateData(data) {
-        if (!data.date || !data.startTime || !data.endTime || !data.emotion || !data.app) {
+        if (!data.date || !data.startTime || !data.endTime || !data.drivingEmotion || !data.resultingEmotion || !data.app) {
             this.showMessage('Please fill in all required fields', 'error');
             return false;
         }
@@ -308,7 +388,7 @@ class DoomScrollTracker {
         container.style.display = 'block';
         list.innerHTML = pending.map(entry => `
             <div class="pending-item">
-                <strong>${entry.emotion}</strong> - ${entry.app}
+                <strong>${entry.drivingEmotion || entry.emotion}</strong> - ${entry.app}
                 <small>(${new Date(entry.timestamp).toLocaleString()})</small>
             </div>
         `).join('');
@@ -384,10 +464,16 @@ class DoomScrollTracker {
         form.reset();
         this.setDefaultDate();
 
+        // Reset intensity value displays
+        document.getElementById('driving-intensity-value').textContent = '5';
+        document.getElementById('resulting-intensity-value').textContent = '5';
+
         // Hide custom input fields
-        document.getElementById('custom-emotion-group').style.display = 'none';
+        document.getElementById('custom-driving-emotion-group').style.display = 'none';
+        document.getElementById('custom-resulting-emotion-group').style.display = 'none';
         document.getElementById('custom-app-group').style.display = 'none';
-        document.getElementById('custom-emotion').required = false;
+        document.getElementById('custom-driving-emotion').required = false;
+        document.getElementById('custom-resulting-emotion').required = false;
         document.getElementById('custom-app').required = false;
     }
 }

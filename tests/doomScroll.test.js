@@ -12,16 +12,33 @@ beforeAll(() => {
         <span id="status-text">Online</span>
         <form id="doom-scroll-form">
             <input type="date" id="date" name="date">
-            <select id="emotion" name="emotion" required>
-                <option value="">Select Emotion</option>
-                <option value="Anxious">Anxious</option>
-                <option value="Bored">Bored</option>
-                <option value="Stressed">Stressed</option>
+            <select id="driving-emotion" name="drivingEmotion" multiple required size="7">
+                <option value="bored">Bored</option>
+                <option value="sad">Sad</option>
+                <option value="excited">Excited</option>
+                <option value="disturbed">Disturbed</option>
+                <option value="angry">Angry</option>
+                <option value="frustrated">Frustrated</option>
                 <option value="Other">Other</option>
             </select>
-            <div id="custom-emotion-group" style="display: none;">
-                <input type="text" id="custom-emotion" name="customEmotion">
+            <div id="custom-driving-emotion-group" style="display: none;">
+                <input type="text" id="custom-driving-emotion" name="customDrivingEmotion">
             </div>
+            <input type="range" id="driving-emotion-intensity" name="drivingEmotionIntensity" min="0" max="10" value="5">
+            <span id="driving-intensity-value">5</span>
+            <select id="resulting-emotion" name="resultingEmotion" multiple required size="6">
+                <option value="empty">Empty</option>
+                <option value="depressed">Depressed</option>
+                <option value="angry">Angry</option>
+                <option value="self righteous">Self Righteous</option>
+                <option value="sad">Sad</option>
+                <option value="Other">Other</option>
+            </select>
+            <div id="custom-resulting-emotion-group" style="display: none;">
+                <input type="text" id="custom-resulting-emotion" name="customResultingEmotion">
+            </div>
+            <input type="range" id="resulting-emotion-intensity" name="resultingEmotionIntensity" min="0" max="10" value="5">
+            <span id="resulting-intensity-value">5</span>
             <select id="app" name="app" required>
                 <option value="">Select App</option>
                 <option value="Instagram">Instagram</option>
@@ -73,37 +90,117 @@ describe('DoomScrollTracker', () => {
         });
     });
 
-    describe('handleEmotionChange', () => {
-        test('should show custom emotion input when Other is selected', () => {
-            const emotionSelect = document.getElementById('emotion');
-            const customEmotionGroup = document.getElementById('custom-emotion-group');
-            const customEmotionInput = document.getElementById('custom-emotion');
+    describe('handleDrivingEmotionChange', () => {
+        test('should show custom driving emotion input when Other is selected', () => {
+            const drivingEmotionSelect = document.getElementById('driving-emotion');
+            const customDrivingEmotionGroup = document.getElementById('custom-driving-emotion-group');
+            const customDrivingEmotionInput = document.getElementById('custom-driving-emotion');
 
-            emotionSelect.value = 'Other';
-            const event = { target: emotionSelect };
+            const otherOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'Other');
+            otherOption.selected = true;
 
-            tracker.handleEmotionChange(event);
+            const event = {
+                target: {
+                    selectedOptions: [otherOption]
+                }
+            };
 
-            expect(customEmotionGroup.style.display).toBe('block');
-            expect(customEmotionInput.required).toBe(true);
+            tracker.handleDrivingEmotionChange(event);
+
+            expect(customDrivingEmotionGroup.style.display).toBe('block');
+            expect(customDrivingEmotionInput.required).toBe(true);
         });
 
-        test('should hide custom emotion input when predefined option is selected', () => {
-            const emotionSelect = document.getElementById('emotion');
-            const customEmotionGroup = document.getElementById('custom-emotion-group');
-            const customEmotionInput = document.getElementById('custom-emotion');
+        test('should hide custom driving emotion input when Other is not selected', () => {
+            const drivingEmotionSelect = document.getElementById('driving-emotion');
+            const customDrivingEmotionGroup = document.getElementById('custom-driving-emotion-group');
+            const customDrivingEmotionInput = document.getElementById('custom-driving-emotion');
 
-            // First show it
-            emotionSelect.value = 'Other';
-            tracker.handleEmotionChange({ target: emotionSelect });
+            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
+            boredOption.selected = true;
 
-            // Then select a predefined option
-            emotionSelect.value = 'Anxious';
-            tracker.handleEmotionChange({ target: emotionSelect });
+            const event = {
+                target: {
+                    selectedOptions: [boredOption]
+                }
+            };
 
-            expect(customEmotionGroup.style.display).toBe('none');
-            expect(customEmotionInput.required).toBe(false);
-            expect(customEmotionInput.value).toBe('');
+            tracker.handleDrivingEmotionChange(event);
+
+            expect(customDrivingEmotionGroup.style.display).toBe('none');
+            expect(customDrivingEmotionInput.required).toBe(false);
+            expect(customDrivingEmotionInput.value).toBe('');
+        });
+    });
+
+    describe('updateDrivingIntensityValue', () => {
+        test('should update driving intensity value display', () => {
+            const slider = document.getElementById('driving-emotion-intensity');
+            const valueDisplay = document.getElementById('driving-intensity-value');
+
+            slider.value = '7';
+            const event = { target: slider };
+
+            tracker.updateDrivingIntensityValue(event);
+
+            expect(valueDisplay.textContent).toBe('7');
+        });
+    });
+
+    describe('updateResultingIntensityValue', () => {
+        test('should update resulting intensity value display', () => {
+            const slider = document.getElementById('resulting-emotion-intensity');
+            const valueDisplay = document.getElementById('resulting-intensity-value');
+
+            slider.value = '10';
+            const event = { target: slider };
+
+            tracker.updateResultingIntensityValue(event);
+
+            expect(valueDisplay.textContent).toBe('10');
+        });
+    });
+
+    describe('handleResultingEmotionChange', () => {
+        test('should show custom resulting emotion input when Other is selected', () => {
+            const resultingEmotionSelect = document.getElementById('resulting-emotion');
+            const customResultingEmotionGroup = document.getElementById('custom-resulting-emotion-group');
+            const customResultingEmotionInput = document.getElementById('custom-resulting-emotion');
+
+            const otherOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'Other');
+            otherOption.selected = true;
+
+            const event = {
+                target: {
+                    selectedOptions: [otherOption]
+                }
+            };
+
+            tracker.handleResultingEmotionChange(event);
+
+            expect(customResultingEmotionGroup.style.display).toBe('block');
+            expect(customResultingEmotionInput.required).toBe(true);
+        });
+
+        test('should hide custom resulting emotion input when Other is not selected', () => {
+            const resultingEmotionSelect = document.getElementById('resulting-emotion');
+            const customResultingEmotionGroup = document.getElementById('custom-resulting-emotion-group');
+            const customResultingEmotionInput = document.getElementById('custom-resulting-emotion');
+
+            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
+            emptyOption.selected = true;
+
+            const event = {
+                target: {
+                    selectedOptions: [emptyOption]
+                }
+            };
+
+            tracker.handleResultingEmotionChange(event);
+
+            expect(customResultingEmotionGroup.style.display).toBe('none');
+            expect(customResultingEmotionInput.required).toBe(false);
+            expect(customResultingEmotionInput.value).toBe('');
         });
     });
 
@@ -143,10 +240,24 @@ describe('DoomScrollTracker', () => {
 
     describe('prepareData', () => {
         test('should prepare basic doom scroll data correctly', () => {
+            // Set up multiple selections
+            const drivingEmotionSelect = document.getElementById('driving-emotion');
+            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
+            const sadOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'sad');
+            boredOption.selected = true;
+            sadOption.selected = true;
+
+            const resultingEmotionSelect = document.getElementById('resulting-emotion');
+            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
+            const depressedOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'depressed');
+            emptyOption.selected = true;
+            depressedOption.selected = true;
+
             const formData = new FormData();
             formData.set('date', '2023-12-01');
-            formData.set('emotion', 'Anxious');
-            formData.set('app', 'Instagram');
+            formData.set('drivingEmotionIntensity', '7');
+            formData.set('resultingEmotionIntensity', '10');
+            formData.set('app', 'reddit');
             formData.set('startTime', '14:30');
             formData.set('endTime', '15:45');
             formData.set('notes', 'Test doom scroll session');
@@ -154,32 +265,56 @@ describe('DoomScrollTracker', () => {
             const result = tracker.prepareData(formData);
 
             expect(result.date).toBe('2023-12-01');
-            expect(result.emotion).toBe('Anxious');
-            expect(result.app).toBe('Instagram');
+            expect(result.drivingEmotion).toBe('bored, sad');
+            expect(result.drivingEmotionIntensity).toBe(7);
+            expect(result.resultingEmotion).toBe('empty, depressed');
+            expect(result.resultingEmotionIntensity).toBe(10);
+            expect(result.app).toBe('reddit');
             expect(result.startTime).toBe('2023-12-01T14:30:00Z');
             expect(result.endTime).toBe('2023-12-01T15:45:00Z');
             expect(result.notes).toBe('Test doom scroll session');
         });
 
-        test('should handle custom emotion', () => {
+        test('should handle custom driving emotion', () => {
+            // Clear all selections first and select only "Other" option
+            const drivingEmotionSelect = document.getElementById('driving-emotion');
+            Array.from(drivingEmotionSelect.options).forEach(opt => opt.selected = false);
+            const otherOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'Other');
+            otherOption.selected = true;
+
+            const resultingEmotionSelect = document.getElementById('resulting-emotion');
+            Array.from(resultingEmotionSelect.options).forEach(opt => opt.selected = false);
+            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
+            emptyOption.selected = true;
+
             const formData = new FormData();
             formData.set('date', '2023-12-01');
-            formData.set('emotion', 'Other');
-            formData.set('customEmotion', 'Overwhelmed');
+            formData.set('customDrivingEmotion', 'Overwhelmed');
+            formData.set('drivingEmotionIntensity', '5');
+            formData.set('resultingEmotionIntensity', '5');
             formData.set('app', 'Instagram');
             formData.set('startTime', '14:30');
             formData.set('endTime', '15:00');
 
             const result = tracker.prepareData(formData);
 
-            expect(result.emotion).toBe('Overwhelmed');
-            expect(result.customEmotion).toBeUndefined();
+            expect(result.drivingEmotion).toBe('Overwhelmed');
+            expect(result.customDrivingEmotion).toBeUndefined();
         });
 
         test('should handle custom app', () => {
+            const drivingEmotionSelect = document.getElementById('driving-emotion');
+            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
+            boredOption.selected = true;
+
+            const resultingEmotionSelect = document.getElementById('resulting-emotion');
+            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
+            emptyOption.selected = true;
+
             const formData = new FormData();
             formData.set('date', '2023-12-01');
-            formData.set('emotion', 'Bored');
+            formData.set('drivingEmotionIntensity', '5');
+            formData.set('resultingEmotionIntensity', '5');
             formData.set('app', 'Other');
             formData.set('customApp', 'Reddit');
             formData.set('startTime', '14:30');
@@ -191,27 +326,50 @@ describe('DoomScrollTracker', () => {
             expect(result.customApp).toBeUndefined();
         });
 
-        test('should handle both custom emotion and app', () => {
+        test('should handle multiple emotions with custom driving emotion', () => {
+            const drivingEmotionSelect = document.getElementById('driving-emotion');
+            Array.from(drivingEmotionSelect.options).forEach(opt => opt.selected = false);
+            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
+            const otherOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'Other');
+            boredOption.selected = true;
+            otherOption.selected = true;
+
+            const resultingEmotionSelect = document.getElementById('resulting-emotion');
+            Array.from(resultingEmotionSelect.options).forEach(opt => opt.selected = false);
+            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
+            const sadOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'sad');
+            emptyOption.selected = true;
+            sadOption.selected = true;
+
             const formData = new FormData();
             formData.set('date', '2023-12-01');
-            formData.set('emotion', 'Other');
-            formData.set('customEmotion', 'Lonely');
-            formData.set('app', 'Other');
-            formData.set('customApp', 'Facebook');
+            formData.set('customDrivingEmotion', 'Lonely');
+            formData.set('drivingEmotionIntensity', '5');
+            formData.set('resultingEmotionIntensity', '5');
+            formData.set('app', 'Facebook');
             formData.set('startTime', '14:30');
             formData.set('endTime', '15:00');
 
             const result = tracker.prepareData(formData);
 
-            expect(result.emotion).toBe('Lonely');
+            expect(result.drivingEmotion).toBe('bored, Lonely');
+            expect(result.resultingEmotion).toBe('empty, sad');
             expect(result.app).toBe('Facebook');
-            expect(result.customEmotion).toBeUndefined();
-            expect(result.customApp).toBeUndefined();
+            expect(result.customDrivingEmotion).toBeUndefined();
         });
 
         test('should use current date if not provided', () => {
+            const drivingEmotionSelect = document.getElementById('driving-emotion');
+            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
+            boredOption.selected = true;
+
+            const resultingEmotionSelect = document.getElementById('resulting-emotion');
+            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
+            emptyOption.selected = true;
+
             const formData = new FormData();
-            formData.set('emotion', 'Anxious');
+            formData.set('drivingEmotionIntensity', '5');
+            formData.set('resultingEmotionIntensity', '5');
             formData.set('app', 'Instagram');
             formData.set('startTime', '14:30');
             formData.set('endTime', '15:00');
@@ -221,6 +379,61 @@ describe('DoomScrollTracker', () => {
             const expectedDate = new Date().toISOString().split('T')[0];
             expect(result.date).toBe(expectedDate);
         });
+
+        test('should handle custom resulting emotion', () => {
+            // Clear all selections first and select only "Other" option
+            const drivingEmotionSelect = document.getElementById('driving-emotion');
+            Array.from(drivingEmotionSelect.options).forEach(opt => opt.selected = false);
+            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
+            boredOption.selected = true;
+
+            const resultingEmotionSelect = document.getElementById('resulting-emotion');
+            Array.from(resultingEmotionSelect.options).forEach(opt => opt.selected = false);
+            const otherOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'Other');
+            otherOption.selected = true;
+
+            const formData = new FormData();
+            formData.set('date', '2023-12-01');
+            formData.set('customResultingEmotion', 'Guilty');
+            formData.set('drivingEmotionIntensity', '5');
+            formData.set('resultingEmotionIntensity', '8');
+            formData.set('app', 'Instagram');
+            formData.set('startTime', '14:30');
+            formData.set('endTime', '15:00');
+
+            const result = tracker.prepareData(formData);
+
+            expect(result.resultingEmotion).toBe('Guilty');
+            expect(result.customResultingEmotion).toBeUndefined();
+        });
+
+        test('should handle multiple resulting emotions with custom emotion', () => {
+            const drivingEmotionSelect = document.getElementById('driving-emotion');
+            Array.from(drivingEmotionSelect.options).forEach(opt => opt.selected = false);
+            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
+            boredOption.selected = true;
+
+            const resultingEmotionSelect = document.getElementById('resulting-emotion');
+            Array.from(resultingEmotionSelect.options).forEach(opt => opt.selected = false);
+            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
+            const otherOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'Other');
+            emptyOption.selected = true;
+            otherOption.selected = true;
+
+            const formData = new FormData();
+            formData.set('date', '2023-12-01');
+            formData.set('customResultingEmotion', 'Ashamed');
+            formData.set('drivingEmotionIntensity', '5');
+            formData.set('resultingEmotionIntensity', '9');
+            formData.set('app', 'TikTok');
+            formData.set('startTime', '14:30');
+            formData.set('endTime', '15:00');
+
+            const result = tracker.prepareData(formData);
+
+            expect(result.resultingEmotion).toBe('empty, Ashamed');
+            expect(result.customResultingEmotion).toBeUndefined();
+        });
     });
 
     describe('validateData', () => {
@@ -229,8 +442,11 @@ describe('DoomScrollTracker', () => {
                 date: '2023-12-01',
                 startTime: '2023-12-01T14:30:00Z',
                 endTime: '2023-12-01T15:45:00Z',
-                emotion: 'Anxious',
-                app: 'Instagram'
+                drivingEmotion: 'bored, sad',
+                drivingEmotionIntensity: 7,
+                resultingEmotion: 'empty, depressed',
+                resultingEmotionIntensity: 10,
+                app: 'reddit'
             };
 
             const result = tracker.validateData(validData);
@@ -241,7 +457,8 @@ describe('DoomScrollTracker', () => {
             const invalidData = {
                 startTime: '2023-12-01T14:30:00Z',
                 endTime: '2023-12-01T15:45:00Z',
-                emotion: 'Anxious',
+                drivingEmotion: 'bored',
+                resultingEmotion: 'empty',
                 app: 'Instagram'
             };
 
@@ -253,7 +470,8 @@ describe('DoomScrollTracker', () => {
             const invalidData = {
                 date: '2023-12-01',
                 endTime: '2023-12-01T15:45:00Z',
-                emotion: 'Anxious',
+                drivingEmotion: 'bored',
+                resultingEmotion: 'empty',
                 app: 'Instagram'
             };
 
@@ -265,7 +483,8 @@ describe('DoomScrollTracker', () => {
             const invalidData = {
                 date: '2023-12-01',
                 startTime: '2023-12-01T14:30:00Z',
-                emotion: 'Anxious',
+                drivingEmotion: 'bored',
+                resultingEmotion: 'empty',
                 app: 'Instagram'
             };
 
@@ -273,11 +492,25 @@ describe('DoomScrollTracker', () => {
             expect(result).toBe(false);
         });
 
-        test('should return false when emotion is missing', () => {
+        test('should return false when drivingEmotion is missing', () => {
             const invalidData = {
                 date: '2023-12-01',
                 startTime: '2023-12-01T14:30:00Z',
                 endTime: '2023-12-01T15:45:00Z',
+                resultingEmotion: 'empty',
+                app: 'Instagram'
+            };
+
+            const result = tracker.validateData(invalidData);
+            expect(result).toBe(false);
+        });
+
+        test('should return false when resultingEmotion is missing', () => {
+            const invalidData = {
+                date: '2023-12-01',
+                startTime: '2023-12-01T14:30:00Z',
+                endTime: '2023-12-01T15:45:00Z',
+                drivingEmotion: 'bored',
                 app: 'Instagram'
             };
 
@@ -290,7 +523,8 @@ describe('DoomScrollTracker', () => {
                 date: '2023-12-01',
                 startTime: '2023-12-01T14:30:00Z',
                 endTime: '2023-12-01T15:45:00Z',
-                emotion: 'Anxious'
+                drivingEmotion: 'bored',
+                resultingEmotion: 'empty'
             };
 
             const result = tracker.validateData(invalidData);
@@ -302,7 +536,8 @@ describe('DoomScrollTracker', () => {
                 date: '2023-12-01',
                 startTime: 'invalid-date',
                 endTime: '2023-12-01T15:45:00Z',
-                emotion: 'Anxious',
+                drivingEmotion: 'bored',
+                resultingEmotion: 'empty',
                 app: 'Instagram'
             };
 
@@ -315,7 +550,8 @@ describe('DoomScrollTracker', () => {
                 date: '2023-12-01',
                 startTime: '2023-12-01T15:45:00Z',
                 endTime: '2023-12-01T14:30:00Z',
-                emotion: 'Anxious',
+                drivingEmotion: 'bored',
+                resultingEmotion: 'empty',
                 app: 'Instagram'
             };
 
@@ -328,7 +564,8 @@ describe('DoomScrollTracker', () => {
                 date: '2023-12-01',
                 startTime: '2023-12-01T14:30:00Z',
                 endTime: '2023-12-01T14:30:00Z',
-                emotion: 'Anxious',
+                drivingEmotion: 'bored',
+                resultingEmotion: 'empty',
                 app: 'Instagram'
             };
 
@@ -342,8 +579,11 @@ describe('DoomScrollTracker', () => {
             const testData = {
                 entryType: 'doomScroll',
                 date: '2023-12-01',
-                emotion: 'Anxious',
-                app: 'Instagram',
+                drivingEmotion: 'bored, sad',
+                drivingEmotionIntensity: 7,
+                resultingEmotion: 'empty, depressed',
+                resultingEmotionIntensity: 10,
+                app: 'reddit',
                 startTime: '2023-12-01T14:30:00Z',
                 endTime: '2023-12-01T15:45:00Z',
                 notes: 'Test session'
@@ -365,8 +605,11 @@ describe('DoomScrollTracker', () => {
                 body: JSON.stringify({
                     entryType: 'doomScroll',
                     date: '2023-12-01',
-                    emotion: 'Anxious',
-                    app: 'Instagram',
+                    drivingEmotion: 'bored, sad',
+                    drivingEmotionIntensity: 7,
+                    resultingEmotion: 'empty, depressed',
+                    resultingEmotionIntensity: 10,
+                    app: 'reddit',
                     startTime: encodeURIComponent(testData.startTime),
                     endTime: encodeURIComponent(testData.endTime),
                     notes: 'Test session'
@@ -377,7 +620,8 @@ describe('DoomScrollTracker', () => {
         test('should throw error on failed request', async () => {
             const testData = {
                 date: '2023-12-01',
-                emotion: 'Anxious',
+                drivingEmotion: 'bored',
+                resultingEmotion: 'empty',
                 app: 'Instagram',
                 startTime: '2023-12-01T14:30:00Z',
                 endTime: '2023-12-01T15:45:00Z'
@@ -395,7 +639,8 @@ describe('DoomScrollTracker', () => {
         test('should throw error when API returns error in response', async () => {
             const testData = {
                 date: '2023-12-01',
-                emotion: 'Anxious',
+                drivingEmotion: 'bored',
+                resultingEmotion: 'empty',
                 app: 'Instagram',
                 startTime: '2023-12-01T14:30:00Z',
                 endTime: '2023-12-01T15:45:00Z'
@@ -414,8 +659,11 @@ describe('DoomScrollTracker', () => {
         test('should save doom scroll entry to queue when offline', () => {
             const testData = {
                 date: '2023-12-01',
-                emotion: 'Anxious',
-                app: 'Instagram',
+                drivingEmotion: 'bored, sad',
+                drivingEmotionIntensity: 7,
+                resultingEmotion: 'empty, depressed',
+                resultingEmotionIntensity: 10,
+                app: 'reddit',
                 startTime: '2023-12-01T14:30:00Z',
                 endTime: '2023-12-01T15:45:00Z'
             };
@@ -426,8 +674,8 @@ describe('DoomScrollTracker', () => {
 
             const savedData = JSON.parse(localStorage.setItem.mock.calls[0][1]);
             expect(savedData).toHaveLength(1);
-            expect(savedData[0].emotion).toBe('Anxious');
-            expect(savedData[0].app).toBe('Instagram');
+            expect(savedData[0].drivingEmotion).toBe('bored, sad');
+            expect(savedData[0].app).toBe('reddit');
             expect(savedData[0]).toHaveProperty('timestamp');
             expect(savedData[0]).toHaveProperty('id');
         });
@@ -435,7 +683,8 @@ describe('DoomScrollTracker', () => {
         test('should load pending entries from localStorage', () => {
             const mockEntries = [
                 {
-                    emotion: 'Bored',
+                    drivingEmotion: 'bored',
+                    resultingEmotion: 'empty',
                     app: 'TikTok',
                     timestamp: '2023-12-01T14:30:00Z',
                     id: '1234567890'
@@ -551,23 +800,35 @@ describe('DoomScrollTracker', () => {
     describe('resetForm', () => {
         test('should reset form and hide custom fields', () => {
             const form = document.getElementById('doom-scroll-form');
-            const customEmotionGroup = document.getElementById('custom-emotion-group');
+            const customDrivingEmotionGroup = document.getElementById('custom-driving-emotion-group');
+            const customResultingEmotionGroup = document.getElementById('custom-resulting-emotion-group');
             const customAppGroup = document.getElementById('custom-app-group');
-            const customEmotionInput = document.getElementById('custom-emotion');
+            const customDrivingEmotionInput = document.getElementById('custom-driving-emotion');
+            const customResultingEmotionInput = document.getElementById('custom-resulting-emotion');
             const customAppInput = document.getElementById('custom-app');
+            const drivingIntensityValue = document.getElementById('driving-intensity-value');
+            const resultingIntensityValue = document.getElementById('resulting-intensity-value');
 
             // Set some values first
-            customEmotionGroup.style.display = 'block';
+            customDrivingEmotionGroup.style.display = 'block';
+            customResultingEmotionGroup.style.display = 'block';
             customAppGroup.style.display = 'block';
-            customEmotionInput.required = true;
+            customDrivingEmotionInput.required = true;
+            customResultingEmotionInput.required = true;
             customAppInput.required = true;
+            drivingIntensityValue.textContent = '8';
+            resultingIntensityValue.textContent = '9';
 
             tracker.resetForm();
 
-            expect(customEmotionGroup.style.display).toBe('none');
+            expect(customDrivingEmotionGroup.style.display).toBe('none');
+            expect(customResultingEmotionGroup.style.display).toBe('none');
             expect(customAppGroup.style.display).toBe('none');
-            expect(customEmotionInput.required).toBe(false);
+            expect(customDrivingEmotionInput.required).toBe(false);
+            expect(customResultingEmotionInput.required).toBe(false);
             expect(customAppInput.required).toBe(false);
+            expect(drivingIntensityValue.textContent).toBe('5');
+            expect(resultingIntensityValue.textContent).toBe('5');
         });
     });
 });
