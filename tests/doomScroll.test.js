@@ -33,6 +33,7 @@ beforeAll(() => {
                 <input type="text" id="custom-app" name="customApp">
             </div>
             <input type="time" id="start-time" name="startTime" required>
+            <input type="time" id="end-time" name="endTime" required>
             <textarea id="notes" name="notes"></textarea>
             <button type="submit" class="submit-btn">
                 <span class="btn-text">Submit</span>
@@ -147,6 +148,7 @@ describe('DoomScrollTracker', () => {
             formData.set('emotion', 'Anxious');
             formData.set('app', 'Instagram');
             formData.set('startTime', '14:30');
+            formData.set('endTime', '15:45');
             formData.set('notes', 'Test doom scroll session');
 
             const result = tracker.prepareData(formData);
@@ -155,6 +157,7 @@ describe('DoomScrollTracker', () => {
             expect(result.emotion).toBe('Anxious');
             expect(result.app).toBe('Instagram');
             expect(result.startTime).toBe('2023-12-01T14:30:00Z');
+            expect(result.endTime).toBe('2023-12-01T15:45:00Z');
             expect(result.notes).toBe('Test doom scroll session');
         });
 
@@ -165,6 +168,7 @@ describe('DoomScrollTracker', () => {
             formData.set('customEmotion', 'Overwhelmed');
             formData.set('app', 'Instagram');
             formData.set('startTime', '14:30');
+            formData.set('endTime', '15:00');
 
             const result = tracker.prepareData(formData);
 
@@ -179,6 +183,7 @@ describe('DoomScrollTracker', () => {
             formData.set('app', 'Other');
             formData.set('customApp', 'Reddit');
             formData.set('startTime', '14:30');
+            formData.set('endTime', '15:00');
 
             const result = tracker.prepareData(formData);
 
@@ -194,6 +199,7 @@ describe('DoomScrollTracker', () => {
             formData.set('app', 'Other');
             formData.set('customApp', 'Facebook');
             formData.set('startTime', '14:30');
+            formData.set('endTime', '15:00');
 
             const result = tracker.prepareData(formData);
 
@@ -208,6 +214,7 @@ describe('DoomScrollTracker', () => {
             formData.set('emotion', 'Anxious');
             formData.set('app', 'Instagram');
             formData.set('startTime', '14:30');
+            formData.set('endTime', '15:00');
 
             const result = tracker.prepareData(formData);
 
@@ -221,6 +228,7 @@ describe('DoomScrollTracker', () => {
             const validData = {
                 date: '2023-12-01',
                 startTime: '2023-12-01T14:30:00Z',
+                endTime: '2023-12-01T15:45:00Z',
                 emotion: 'Anxious',
                 app: 'Instagram'
             };
@@ -232,6 +240,7 @@ describe('DoomScrollTracker', () => {
         test('should return false when date is missing', () => {
             const invalidData = {
                 startTime: '2023-12-01T14:30:00Z',
+                endTime: '2023-12-01T15:45:00Z',
                 emotion: 'Anxious',
                 app: 'Instagram'
             };
@@ -243,6 +252,19 @@ describe('DoomScrollTracker', () => {
         test('should return false when startTime is missing', () => {
             const invalidData = {
                 date: '2023-12-01',
+                endTime: '2023-12-01T15:45:00Z',
+                emotion: 'Anxious',
+                app: 'Instagram'
+            };
+
+            const result = tracker.validateData(invalidData);
+            expect(result).toBe(false);
+        });
+
+        test('should return false when endTime is missing', () => {
+            const invalidData = {
+                date: '2023-12-01',
+                startTime: '2023-12-01T14:30:00Z',
                 emotion: 'Anxious',
                 app: 'Instagram'
             };
@@ -255,6 +277,7 @@ describe('DoomScrollTracker', () => {
             const invalidData = {
                 date: '2023-12-01',
                 startTime: '2023-12-01T14:30:00Z',
+                endTime: '2023-12-01T15:45:00Z',
                 app: 'Instagram'
             };
 
@@ -266,6 +289,7 @@ describe('DoomScrollTracker', () => {
             const invalidData = {
                 date: '2023-12-01',
                 startTime: '2023-12-01T14:30:00Z',
+                endTime: '2023-12-01T15:45:00Z',
                 emotion: 'Anxious'
             };
 
@@ -277,11 +301,38 @@ describe('DoomScrollTracker', () => {
             const invalidData = {
                 date: '2023-12-01',
                 startTime: 'invalid-date',
+                endTime: '2023-12-01T15:45:00Z',
                 emotion: 'Anxious',
                 app: 'Instagram'
             };
 
             const result = tracker.validateData(invalidData);
+            expect(result).toBe(false);
+        });
+
+        test('should validate time order - reject when end time is before start time', () => {
+            const invalidTimeData = {
+                date: '2023-12-01',
+                startTime: '2023-12-01T15:45:00Z',
+                endTime: '2023-12-01T14:30:00Z',
+                emotion: 'Anxious',
+                app: 'Instagram'
+            };
+
+            const result = tracker.validateData(invalidTimeData);
+            expect(result).toBe(false);
+        });
+
+        test('should validate time order - reject when end time equals start time', () => {
+            const invalidTimeData = {
+                date: '2023-12-01',
+                startTime: '2023-12-01T14:30:00Z',
+                endTime: '2023-12-01T14:30:00Z',
+                emotion: 'Anxious',
+                app: 'Instagram'
+            };
+
+            const result = tracker.validateData(invalidTimeData);
             expect(result).toBe(false);
         });
     });
@@ -294,6 +345,7 @@ describe('DoomScrollTracker', () => {
                 emotion: 'Anxious',
                 app: 'Instagram',
                 startTime: '2023-12-01T14:30:00Z',
+                endTime: '2023-12-01T15:45:00Z',
                 notes: 'Test session'
             };
 
@@ -316,6 +368,7 @@ describe('DoomScrollTracker', () => {
                     emotion: 'Anxious',
                     app: 'Instagram',
                     startTime: encodeURIComponent(testData.startTime),
+                    endTime: encodeURIComponent(testData.endTime),
                     notes: 'Test session'
                 })
             });
@@ -326,7 +379,8 @@ describe('DoomScrollTracker', () => {
                 date: '2023-12-01',
                 emotion: 'Anxious',
                 app: 'Instagram',
-                startTime: '2023-12-01T14:30:00Z'
+                startTime: '2023-12-01T14:30:00Z',
+                endTime: '2023-12-01T15:45:00Z'
             };
 
             fetch.mockResolvedValueOnce({
@@ -343,7 +397,8 @@ describe('DoomScrollTracker', () => {
                 date: '2023-12-01',
                 emotion: 'Anxious',
                 app: 'Instagram',
-                startTime: '2023-12-01T14:30:00Z'
+                startTime: '2023-12-01T14:30:00Z',
+                endTime: '2023-12-01T15:45:00Z'
             };
 
             fetch.mockResolvedValueOnce({
@@ -361,7 +416,8 @@ describe('DoomScrollTracker', () => {
                 date: '2023-12-01',
                 emotion: 'Anxious',
                 app: 'Instagram',
-                startTime: '2023-12-01T14:30:00Z'
+                startTime: '2023-12-01T14:30:00Z',
+                endTime: '2023-12-01T15:45:00Z'
             };
 
             tracker.saveToQueue(testData);

@@ -137,6 +137,7 @@ class DoomScrollTracker {
         // Convert date and time to ISO format
         const date = data.date || new Date().toISOString().split('T')[0];
         data.startTime = `${date}T${data.startTime}:00Z`;
+        data.endTime = `${date}T${data.endTime}:00Z`;
 
         // Keep the date field for API payload
         data.date = date;
@@ -148,15 +149,23 @@ class DoomScrollTracker {
      * Validate required fields
      */
     validateData(data) {
-        if (!data.date || !data.startTime || !data.emotion || !data.app) {
+        if (!data.date || !data.startTime || !data.endTime || !data.emotion || !data.app) {
             this.showMessage('Please fill in all required fields', 'error');
             return false;
         }
 
-        // Check if startTime is valid ISO format
+        // Parse ISO formatted timestamps
         const start = new Date(data.startTime);
-        if (isNaN(start.getTime())) {
+        const end = new Date(data.endTime);
+
+        // Check if dates are valid
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
             this.showMessage('Invalid date/time format', 'error');
+            return false;
+        }
+
+        if (start >= end) {
+            this.showMessage('End time must be after start time', 'error');
             return false;
         }
 
@@ -173,6 +182,7 @@ class DoomScrollTracker {
             entryType: "doomScroll",
             ...data,
             startTime: encodeURIComponent(data.startTime),
+            endTime: encodeURIComponent(data.endTime),
         };
         
         console.log('Submitting doom scroll data:', JSON.stringify(encodedData));
