@@ -52,11 +52,11 @@ class DoomScrollTracker {
      * Show/hide custom driving emotion input when "Other" is selected
      */
     handleDrivingEmotionChange(e) {
-        const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+        const selectedValue = e.target.value;
         const customDrivingEmotionGroup = document.getElementById('custom-driving-emotion-group');
         const customDrivingEmotionInput = document.getElementById('custom-driving-emotion');
 
-        if (selectedOptions.includes('Other')) {
+        if (selectedValue === 'Other') {
             customDrivingEmotionGroup.style.display = 'block';
             customDrivingEmotionInput.required = true;
         } else {
@@ -70,11 +70,11 @@ class DoomScrollTracker {
      * Show/hide custom resulting emotion input when "Other" is selected
      */
     handleResultingEmotionChange(e) {
-        const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+        const selectedValue = e.target.value;
         const customResultingEmotionGroup = document.getElementById('custom-resulting-emotion-group');
         const customResultingEmotionInput = document.getElementById('custom-resulting-emotion');
 
-        if (selectedOptions.includes('Other')) {
+        if (selectedValue === 'Other') {
             customResultingEmotionGroup.style.display = 'block';
             customResultingEmotionInput.required = true;
         } else {
@@ -157,17 +157,13 @@ class DoomScrollTracker {
     prepareData(formData) {
         const data = {};
 
-        // Get driving emotions (multiple selection)
+        // Get driving emotion (single selection)
         const drivingEmotionSelect = document.getElementById('driving-emotion');
-        const selectedDrivingEmotions = Array.from(drivingEmotionSelect.selectedOptions)
-            .map(option => option.value)
-            .filter(value => value !== 'Other');
+        const selectedDrivingEmotion = drivingEmotionSelect.value;
 
-        // Get resulting emotions (multiple selection)
+        // Get resulting emotion (single selection)
         const resultingEmotionSelect = document.getElementById('resulting-emotion');
-        const selectedResultingEmotions = Array.from(resultingEmotionSelect.selectedOptions)
-            .map(option => option.value)
-            .filter(value => value !== 'Other');
+        const selectedResultingEmotion = resultingEmotionSelect.value;
 
         // Get other form values
         for (let [key, value] of formData.entries()) {
@@ -178,29 +174,19 @@ class DoomScrollTracker {
 
         // Handle custom driving emotion input
         const customDrivingEmotion = formData.get('customDrivingEmotion');
-        if (customDrivingEmotion && selectedDrivingEmotions.length === 0) {
-            // If "Other" was the only selection
+        if (selectedDrivingEmotion === 'Other' && customDrivingEmotion) {
             data.drivingEmotion = customDrivingEmotion;
-        } else if (customDrivingEmotion) {
-            // Append custom emotion to selected emotions
-            selectedDrivingEmotions.push(customDrivingEmotion);
-            data.drivingEmotion = selectedDrivingEmotions.join(', ');
         } else {
-            data.drivingEmotion = selectedDrivingEmotions.join(', ');
+            data.drivingEmotion = selectedDrivingEmotion;
         }
         delete data.customDrivingEmotion;
 
         // Handle custom resulting emotion input
         const customResultingEmotion = formData.get('customResultingEmotion');
-        if (customResultingEmotion && selectedResultingEmotions.length === 0) {
-            // If "Other" was the only selection
+        if (selectedResultingEmotion === 'Other' && customResultingEmotion) {
             data.resultingEmotion = customResultingEmotion;
-        } else if (customResultingEmotion) {
-            // Append custom emotion to selected emotions
-            selectedResultingEmotions.push(customResultingEmotion);
-            data.resultingEmotion = selectedResultingEmotions.join(', ');
         } else {
-            data.resultingEmotion = selectedResultingEmotions.join(', ');
+            data.resultingEmotion = selectedResultingEmotion;
         }
         delete data.customResultingEmotion;
 

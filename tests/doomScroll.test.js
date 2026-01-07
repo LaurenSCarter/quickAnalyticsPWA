@@ -12,7 +12,8 @@ beforeAll(() => {
         <span id="status-text">Online</span>
         <form id="doom-scroll-form">
             <input type="date" id="date" name="date">
-            <select id="driving-emotion" name="drivingEmotion" multiple required size="7">
+            <select id="driving-emotion" name="drivingEmotion" required>
+                <option value="">Select Emotion</option>
                 <option value="bored">Bored</option>
                 <option value="sad">Sad</option>
                 <option value="excited">Excited</option>
@@ -26,7 +27,8 @@ beforeAll(() => {
             </div>
             <input type="range" id="driving-emotion-intensity" name="drivingEmotionIntensity" min="0" max="10" value="5">
             <span id="driving-intensity-value">5</span>
-            <select id="resulting-emotion" name="resultingEmotion" multiple required size="6">
+            <select id="resulting-emotion" name="resultingEmotion" required>
+                <option value="">Select Emotion</option>
                 <option value="empty">Empty</option>
                 <option value="depressed">Depressed</option>
                 <option value="angry">Angry</option>
@@ -96,13 +98,10 @@ describe('DoomScrollTracker', () => {
             const customDrivingEmotionGroup = document.getElementById('custom-driving-emotion-group');
             const customDrivingEmotionInput = document.getElementById('custom-driving-emotion');
 
-            const otherOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'Other');
-            otherOption.selected = true;
+            drivingEmotionSelect.value = 'Other';
 
             const event = {
-                target: {
-                    selectedOptions: [otherOption]
-                }
+                target: drivingEmotionSelect
             };
 
             tracker.handleDrivingEmotionChange(event);
@@ -116,13 +115,10 @@ describe('DoomScrollTracker', () => {
             const customDrivingEmotionGroup = document.getElementById('custom-driving-emotion-group');
             const customDrivingEmotionInput = document.getElementById('custom-driving-emotion');
 
-            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
-            boredOption.selected = true;
+            drivingEmotionSelect.value = 'bored';
 
             const event = {
-                target: {
-                    selectedOptions: [boredOption]
-                }
+                target: drivingEmotionSelect
             };
 
             tracker.handleDrivingEmotionChange(event);
@@ -167,13 +163,10 @@ describe('DoomScrollTracker', () => {
             const customResultingEmotionGroup = document.getElementById('custom-resulting-emotion-group');
             const customResultingEmotionInput = document.getElementById('custom-resulting-emotion');
 
-            const otherOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'Other');
-            otherOption.selected = true;
+            resultingEmotionSelect.value = 'Other';
 
             const event = {
-                target: {
-                    selectedOptions: [otherOption]
-                }
+                target: resultingEmotionSelect
             };
 
             tracker.handleResultingEmotionChange(event);
@@ -187,13 +180,10 @@ describe('DoomScrollTracker', () => {
             const customResultingEmotionGroup = document.getElementById('custom-resulting-emotion-group');
             const customResultingEmotionInput = document.getElementById('custom-resulting-emotion');
 
-            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
-            emptyOption.selected = true;
+            resultingEmotionSelect.value = 'empty';
 
             const event = {
-                target: {
-                    selectedOptions: [emptyOption]
-                }
+                target: resultingEmotionSelect
             };
 
             tracker.handleResultingEmotionChange(event);
@@ -240,18 +230,12 @@ describe('DoomScrollTracker', () => {
 
     describe('prepareData', () => {
         test('should prepare basic doom scroll data correctly', () => {
-            // Set up multiple selections
+            // Set up single selections
             const drivingEmotionSelect = document.getElementById('driving-emotion');
-            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
-            const sadOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'sad');
-            boredOption.selected = true;
-            sadOption.selected = true;
+            drivingEmotionSelect.value = 'bored';
 
             const resultingEmotionSelect = document.getElementById('resulting-emotion');
-            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
-            const depressedOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'depressed');
-            emptyOption.selected = true;
-            depressedOption.selected = true;
+            resultingEmotionSelect.value = 'empty';
 
             const formData = new FormData();
             formData.set('date', '2023-12-01');
@@ -265,9 +249,9 @@ describe('DoomScrollTracker', () => {
             const result = tracker.prepareData(formData);
 
             expect(result.date).toBe('2023-12-01');
-            expect(result.drivingEmotion).toBe('bored, sad');
+            expect(result.drivingEmotion).toBe('bored');
             expect(result.drivingEmotionIntensity).toBe(7);
-            expect(result.resultingEmotion).toBe('empty, depressed');
+            expect(result.resultingEmotion).toBe('empty');
             expect(result.resultingEmotionIntensity).toBe(10);
             expect(result.app).toBe('reddit');
             expect(result.startTime).toBe('2023-12-01T14:30:00Z');
@@ -276,16 +260,12 @@ describe('DoomScrollTracker', () => {
         });
 
         test('should handle custom driving emotion', () => {
-            // Clear all selections first and select only "Other" option
+            // Select "Other" option
             const drivingEmotionSelect = document.getElementById('driving-emotion');
-            Array.from(drivingEmotionSelect.options).forEach(opt => opt.selected = false);
-            const otherOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'Other');
-            otherOption.selected = true;
+            drivingEmotionSelect.value = 'Other';
 
             const resultingEmotionSelect = document.getElementById('resulting-emotion');
-            Array.from(resultingEmotionSelect.options).forEach(opt => opt.selected = false);
-            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
-            emptyOption.selected = true;
+            resultingEmotionSelect.value = 'empty';
 
             const formData = new FormData();
             formData.set('date', '2023-12-01');
@@ -304,12 +284,10 @@ describe('DoomScrollTracker', () => {
 
         test('should handle custom app', () => {
             const drivingEmotionSelect = document.getElementById('driving-emotion');
-            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
-            boredOption.selected = true;
+            drivingEmotionSelect.value = 'bored';
 
             const resultingEmotionSelect = document.getElementById('resulting-emotion');
-            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
-            emptyOption.selected = true;
+            resultingEmotionSelect.value = 'empty';
 
             const formData = new FormData();
             formData.set('date', '2023-12-01');
@@ -326,20 +304,12 @@ describe('DoomScrollTracker', () => {
             expect(result.customApp).toBeUndefined();
         });
 
-        test('should handle multiple emotions with custom driving emotion', () => {
+        test('should handle custom driving emotion when Other is selected', () => {
             const drivingEmotionSelect = document.getElementById('driving-emotion');
-            Array.from(drivingEmotionSelect.options).forEach(opt => opt.selected = false);
-            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
-            const otherOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'Other');
-            boredOption.selected = true;
-            otherOption.selected = true;
+            drivingEmotionSelect.value = 'Other';
 
             const resultingEmotionSelect = document.getElementById('resulting-emotion');
-            Array.from(resultingEmotionSelect.options).forEach(opt => opt.selected = false);
-            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
-            const sadOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'sad');
-            emptyOption.selected = true;
-            sadOption.selected = true;
+            resultingEmotionSelect.value = 'sad';
 
             const formData = new FormData();
             formData.set('date', '2023-12-01');
@@ -352,20 +322,18 @@ describe('DoomScrollTracker', () => {
 
             const result = tracker.prepareData(formData);
 
-            expect(result.drivingEmotion).toBe('bored, Lonely');
-            expect(result.resultingEmotion).toBe('empty, sad');
+            expect(result.drivingEmotion).toBe('Lonely');
+            expect(result.resultingEmotion).toBe('sad');
             expect(result.app).toBe('Facebook');
             expect(result.customDrivingEmotion).toBeUndefined();
         });
 
         test('should use current date if not provided', () => {
             const drivingEmotionSelect = document.getElementById('driving-emotion');
-            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
-            boredOption.selected = true;
+            drivingEmotionSelect.value = 'bored';
 
             const resultingEmotionSelect = document.getElementById('resulting-emotion');
-            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
-            emptyOption.selected = true;
+            resultingEmotionSelect.value = 'empty';
 
             const formData = new FormData();
             formData.set('drivingEmotionIntensity', '5');
@@ -381,16 +349,11 @@ describe('DoomScrollTracker', () => {
         });
 
         test('should handle custom resulting emotion', () => {
-            // Clear all selections first and select only "Other" option
             const drivingEmotionSelect = document.getElementById('driving-emotion');
-            Array.from(drivingEmotionSelect.options).forEach(opt => opt.selected = false);
-            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
-            boredOption.selected = true;
+            drivingEmotionSelect.value = 'bored';
 
             const resultingEmotionSelect = document.getElementById('resulting-emotion');
-            Array.from(resultingEmotionSelect.options).forEach(opt => opt.selected = false);
-            const otherOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'Other');
-            otherOption.selected = true;
+            resultingEmotionSelect.value = 'Other';
 
             const formData = new FormData();
             formData.set('date', '2023-12-01');
@@ -407,18 +370,12 @@ describe('DoomScrollTracker', () => {
             expect(result.customResultingEmotion).toBeUndefined();
         });
 
-        test('should handle multiple resulting emotions with custom emotion', () => {
+        test('should handle custom resulting emotion when Other is selected', () => {
             const drivingEmotionSelect = document.getElementById('driving-emotion');
-            Array.from(drivingEmotionSelect.options).forEach(opt => opt.selected = false);
-            const boredOption = Array.from(drivingEmotionSelect.options).find(opt => opt.value === 'bored');
-            boredOption.selected = true;
+            drivingEmotionSelect.value = 'bored';
 
             const resultingEmotionSelect = document.getElementById('resulting-emotion');
-            Array.from(resultingEmotionSelect.options).forEach(opt => opt.selected = false);
-            const emptyOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'empty');
-            const otherOption = Array.from(resultingEmotionSelect.options).find(opt => opt.value === 'Other');
-            emptyOption.selected = true;
-            otherOption.selected = true;
+            resultingEmotionSelect.value = 'Other';
 
             const formData = new FormData();
             formData.set('date', '2023-12-01');
@@ -431,7 +388,7 @@ describe('DoomScrollTracker', () => {
 
             const result = tracker.prepareData(formData);
 
-            expect(result.resultingEmotion).toBe('empty, Ashamed');
+            expect(result.resultingEmotion).toBe('Ashamed');
             expect(result.customResultingEmotion).toBeUndefined();
         });
     });
@@ -442,9 +399,9 @@ describe('DoomScrollTracker', () => {
                 date: '2023-12-01',
                 startTime: '2023-12-01T14:30:00Z',
                 endTime: '2023-12-01T15:45:00Z',
-                drivingEmotion: 'bored, sad',
+                drivingEmotion: 'bored',
                 drivingEmotionIntensity: 7,
-                resultingEmotion: 'empty, depressed',
+                resultingEmotion: 'empty',
                 resultingEmotionIntensity: 10,
                 app: 'reddit'
             };
@@ -579,9 +536,9 @@ describe('DoomScrollTracker', () => {
             const testData = {
                 entryType: 'doomScroll',
                 date: '2023-12-01',
-                drivingEmotion: 'bored, sad',
+                drivingEmotion: 'bored',
                 drivingEmotionIntensity: 7,
-                resultingEmotion: 'empty, depressed',
+                resultingEmotion: 'empty',
                 resultingEmotionIntensity: 10,
                 app: 'reddit',
                 startTime: '2023-12-01T14:30:00Z',
@@ -605,9 +562,9 @@ describe('DoomScrollTracker', () => {
                 body: JSON.stringify({
                     entryType: 'doomScroll',
                     date: '2023-12-01',
-                    drivingEmotion: 'bored, sad',
+                    drivingEmotion: 'bored',
                     drivingEmotionIntensity: 7,
-                    resultingEmotion: 'empty, depressed',
+                    resultingEmotion: 'empty',
                     resultingEmotionIntensity: 10,
                     app: 'reddit',
                     startTime: encodeURIComponent(testData.startTime),
@@ -659,9 +616,9 @@ describe('DoomScrollTracker', () => {
         test('should save doom scroll entry to queue when offline', () => {
             const testData = {
                 date: '2023-12-01',
-                drivingEmotion: 'bored, sad',
+                drivingEmotion: 'bored',
                 drivingEmotionIntensity: 7,
-                resultingEmotion: 'empty, depressed',
+                resultingEmotion: 'empty',
                 resultingEmotionIntensity: 10,
                 app: 'reddit',
                 startTime: '2023-12-01T14:30:00Z',
@@ -674,7 +631,7 @@ describe('DoomScrollTracker', () => {
 
             const savedData = JSON.parse(localStorage.setItem.mock.calls[0][1]);
             expect(savedData).toHaveLength(1);
-            expect(savedData[0].drivingEmotion).toBe('bored, sad');
+            expect(savedData[0].drivingEmotion).toBe('bored');
             expect(savedData[0].app).toBe('reddit');
             expect(savedData[0]).toHaveProperty('timestamp');
             expect(savedData[0]).toHaveProperty('id');
