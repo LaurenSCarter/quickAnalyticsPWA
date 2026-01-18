@@ -28,6 +28,10 @@ const URLS = {
     // PET ANALYTIC REPORTS
     // TBA
 
+    // FINANCIAL TRACKING REPORTS
+    TRACK_SPENDING_MONTHLY: 'https://lookerstudio.google.com/embed/reporting/b33f9ed8-cb00-42e0-acba-c92a9a06a02f/page/LbTjF',
+    TRACK_SPENDING_YTP: 'https://lookerstudio.google.com/embed/reporting/b33f9ed8-cb00-42e0-acba-c92a9a06a02f/page/p_ezlhl6nwzd'
+
 };
 
 // Export for use in other modules
