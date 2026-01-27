@@ -1,6 +1,6 @@
 class QuickAnalytics {
     constructor() {
-        this.apiUrl = URLS.LOG_ENTRY_ENDPOINT; // Replace with latest deployment APP SCRIPT URL
+        this.apiUrl = URLS.LOG_ENTRY_ENDPOINT;
         this.init();
     }
 
@@ -326,6 +326,7 @@ class QuickAnalytics {
         delete encodedData.subSubCategory;
 
         console.log('sending body: ', JSON.stringify(encodedData));
+        console.log('to:', this.apiUrl);
 
         const response = await fetch(this.apiUrl, {
             redirect: "follow",

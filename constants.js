@@ -1,6 +1,7 @@
 // URL constants for Quick Analytics PWA
 const URLS = {
     // APPS Script Endpoint
+    // Note: Make sure you replace with the latest deployment APP SCRIPT URL
     LOG_ENTRY_ENDPOINT: 'https://script.google.com/macros/s/AKfycbxhWGVWlfdnr_zL-LNYCU58p2Hx4lfYKMKpQqyco7efs-KAV5taJCb9gE1TuT-AiJaaFg/exec',
     
     //Looker Studio Endpoints
