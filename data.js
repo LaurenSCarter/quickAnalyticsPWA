@@ -2,7 +2,6 @@
 const CategoryData = {
     // Define available categories
     categories: [
-        'Ascension Pathway',
         'Health',
         'Home Management',
         'Work'
@@ -10,24 +9,15 @@ const CategoryData = {
 
     // Define tasks for each category
     taskOptions: {
-        'Ascension Pathway': [
-            'Admin',
-            'Circle',
-            'Check-in',
-            'Class',
-            'Data Management',
-            'Homework',
-            'Prayer Partner',
-            'Other'
-        ],
         'Health': [
             'Life Overhead',
+            'Emotional Care',
+            'Ascension Pathway',
+            'Yoga',
+            'Hobbies',
             'Body Care',
             'Dentist',
-            'Emotional Care',
-            'Hobbies',
             'Relax',
-            'Yoga',
             'Other'
         ],
         'Home Management': [
@@ -48,6 +38,7 @@ const CategoryData = {
             'Computer Maintenance',
             'Domestic Angel',
             'Job Applications',
+            'NDIS',
             'Overhead',
             'Professional Development',
             'Sole Trader Administration',
@@ -58,23 +49,15 @@ const CategoryData = {
     },
 
     // Define sub-sub-category options for each task
-    subSubCategoryOptions: {
-        // Ascension Pathway tasks
-        'Admin': ['ML3 Class Index', 'Survey'],
-        'Circle': ['Video On', 'Video Off'],
-        'Check-in': ['1-1 check-in with Jennifer', '1-1 check-in with Mary-Lu'],
-        'Class': ['Replay','Video Off', 'Video On'],
-        'Data Management': ['Download Files', 'ML1 - Download - Rename - Organise', 'ML2 - Download - Rename - Organise', 'ML3 - Download - Rename - Organise', 'AP - Download - Rename - Organise'],
-        'Homework': ['Reading','Ray 3','Inspiration Board','Meditation'],
-        'Prayer Partner': ['Andree','Sara','Cora','Julie'],
-        
+    subSubCategoryOptions: {        
         // Health tasks
         'Life Overhead': ['Wake up', 'Lunch', 'Break', 'Breakfast'],
         'Body Care': ['Personal Hygiene','Mindful Eating','Gym','Rest','Sauna','Sick'],
         'Emotional Care': ['Journaling','Contemplation'],
         'Hobbies': ['Knitting','Reading','Audiobook','Podcast','Content Liberation'],
+        'Ascension Pathway': ['Circle','Breakout Call','Meditation','Spiritual Text'],
         'Relax': ['Bath','Break','Reading','Rest','Sunshine','TV / YouTube'],
-        'Yoga': ['Study','Practice','Meditation'],
+        'Yoga': ['Study','Practice','Yin'],
         
         // Home Management tasks
         'Car': ['Service', 'Registration'],
@@ -92,6 +75,7 @@ const CategoryData = {
         'Computer Maintenance': ['System Updates','Security','Dev Setup','Cloud Storage','Google Photo Settings','Share Recordings to PC','Clean Android Internal Drive','Laptop Battery','Review Key Commands','Troubleshoot Network Congestion','Resolve DNS Issues'],
         'Domestic Angel': ['Product Development','Website V2'],
         'Job Applications': [],
+        'NDIS': ['Like Family', 'InsideOutAssist'],
         'Overhead': ['Commute','Daily Setup'],
         'Professional Development': ['Research Vibe Coding Tools','AI Research','Training: PySpark'],
         'Sole Trader Administration': ['Marketing','Death & Taxes','ABN - Sole Trader Registration','Domain/Email Registration'],
