@@ -21,11 +21,6 @@ const URLS = {
     WEEKLY_DASHBOARD: 'https://lookerstudio.google.com/embed/reporting/6b9695d3-cc1f-4539-9b0f-b6918d6a360a/page/mKhMF',
     WEEKLY_INSPIRATION: 'https://lookerstudio.google.com/embed/reporting/6b9695d3-cc1f-4539-9b0f-b6918d6a360a/page/p_mw7cs3plwd',
 
-    // DOOM SCROLL REPORTS
-    DOOM_WEEKLY_OVERVIEW: 'https://lookerstudio.google.com/embed/reporting/d23efbd3-aa61-4b47-87ac-6d5dc4b066af/page/3JUkF',
-    DOOM_DRIVING_EMOTION_INSIGHTS: 'https://lookerstudio.google.com/embed/reporting/d23efbd3-aa61-4b47-87ac-6d5dc4b066af/page/p_gy0b3darzd',
-    DOOM_RESULTING_EMOTION_INSIGHTS: 'https://lookerstudio.google.com/embed/reporting/d23efbd3-aa61-4b47-87ac-6d5dc4b066af/page/p_x6pl5yarzd',
-
     // PET ANALYTIC REPORTS
     // TBA
 
